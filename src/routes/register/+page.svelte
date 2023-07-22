@@ -12,7 +12,7 @@
 		const password = document.getElementById('password').value;
 
 		
-		await register(email, password).then((res) => {
+		await register(email, password, nama).then((res) => {
 			Swal.fire({
 				title: 'Sukses',
 				text: 'Harap tunggu verifikasi admin',
