@@ -1,4 +1,9 @@
-import { writable } from 'svelte/store';
+// @ts-ignore
+import { storable } from '../../utils/storable';
 
 // Initial login state is set to false
-export const loginState = writable(false);
+export const userStore = storable({
+    user: {},
+    isLogin: false,
+    loading: false
+});

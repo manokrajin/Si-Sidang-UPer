@@ -1,12 +1,14 @@
 <script>
-	import { loginState } from "./loginStore";
+	import { goto } from '$app/navigation';
+	import { loginUser } from '../service/login';
 
-	function handleLogin(){
-		
-		loginState.set(true);
-		console.log(loginState);
+	let email = '';
+	let password = '';
 
-
+	async function handleLogin() {
+		await loginUser(email, password).then(() => {
+			goto('/');
+		});
 	}
 </script>
 
@@ -22,35 +24,35 @@
 				</h1>
 			</div>
 			<div class="formBody">
-				<form action="" method="get" class="">
-					<div class="formGroup my-3">
-						<label for="username">Username</label><br />
-						<input
-							type="text"
-							name="username"
-							id="username"
-							placeholder="Username"
-							class="formInput w-full p-2 border-2 rounded-md my-1 color-grey"
-						/>
-					</div>
-					<div class="formGroup">
-						<label for="password">Password</label><br />
-						<input
-							type="password"
-							name="password"
-							id="password"
-							placeholder="Password"
-							class="formInput w-full p-2 border-2 rounded-md my-1"
-						/>
-					</div>
-					<div class="formGroup text-center text-white">
-						<br /><button
-							type="submit"
-							class="formButton border-2 px-5 py-2 rounded-md bg-primary/90"
-							on:click={handleLogin}>Login</button
-						>
-					</div>
-				</form>
+				<div class="formGroup my-3">
+					<label for="email">Email</label><br />
+					<input
+						bind:value={email}
+						type="text"
+						name="email"
+						id="email"
+						placeholder="email"
+						class="formInput w-full p-2 border-2 rounded-md my-1 color-grey"
+					/>
+				</div>
+				<div class="formGroup">
+					<label for="password">Password</label><br />
+					<input
+						bind:value={password}
+						type="password"
+						name="password"
+						id="password"
+						placeholder="Password"
+						class="formInput w-full p-2 border-2 rounded-md my-1"
+					/>
+				</div>
+				<div class="formGroup text-center text-white">
+					<br /><button
+						type="submit"
+						class="formButton border-2 px-5 py-2 rounded-md bg-primary/90"
+						on:click={handleLogin}>Login</button
+					>
+				</div>
 			</div>
 			<div class="register">
 				<p class="text-center">

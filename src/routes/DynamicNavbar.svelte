@@ -1,10 +1,10 @@
 <script>
     import Navbar from "./navbar.svelte";
     import NavbarLogin from "./navbarLogin.svelte";
-    import { loginState } from "./login/loginStore";
+    import { userStore } from "./login/loginStore";
   </script>
   
-  {#if $loginState}
+  {#if $userStore.isLogin}
     <NavbarLogin />
   {:else}
     <Navbar />

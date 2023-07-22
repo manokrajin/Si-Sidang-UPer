@@ -1,9 +1,13 @@
 <script>
-    import { loginState } from "./login/loginStore";
+    // @ts-nocheck
+	import { goto } from "$app/navigation";
+    import { userStore } from "./login/loginStore";
+	import { logoutUser } from "./service/login";
 
     function logout() {
-        loginState.set(false);
-        window.location.href = "/login";
+        logoutUser().then(() => {
+            goto("/login")
+        })
     }
 </script>
 
@@ -14,15 +18,19 @@
     </div>
     
     <div class="right flex justify-end w-6/12">
-        <div class="namaAplikasi px-1 my-auto">
+        <div class="namaAplikasi mx-4 my-auto">
             <a class="hover:text-primary" href="/#/">Jadwal Sidang</a>
         </div>
-        <div class="home mx-10 place-content-center my-auto hover:text-primary ho">
+        <div class="home mx-4 place-content-center my-auto hover:text-primary">
             <a href="/mahasiswa/cekJadwal">Beranda</a>
+        </div>
+
+        <div class="home mx-4 place-content-center my-auto">
+            <span class="capitalize">Halo {$userStore.user.nama} !</span>
         </div>
     
         <button on:click={logout} class="bg-primary/90 rounded  m-2 px-3 mx-1 hover:bg-red-alert transition duration-700 ease-in-out ">
-            <a href="" class="text-white">Logout</a>
+            <span class="text-white">Logout</span>
         </button>
     </div>
     
