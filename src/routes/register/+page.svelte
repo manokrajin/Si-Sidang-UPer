@@ -10,20 +10,37 @@
 		const email = document.getElementById('email').value;
 		const nama = document.getElementById('username').value;
 		const password = document.getElementById('password').value;
+		const judul = document.getElementById('judul').value;
 
-		
-		await register(email, password, nama).then((res) => {
+		if (!email || !nama || !password || !judul)  {
 			Swal.fire({
-				title: 'Sukses',
-				text: 'Harap tunggu verifikasi admin',
-				icon: 'success',
+				title: 'Error',
+				text: 'Please fill in all fields',
+				icon: 'error',
 				confirmButtonText: 'OK',
 				timer: 3000
 			});
+			return;
+		}
+
+		// Check if password length is at least 6 characters
+		if (password.length < 6) {
+			Swal.fire({
+				title: 'Error',
+				text: 'Password must be at least 6 characters long',
+				icon: 'error',
+				confirmButtonText: 'OK',
+				timer: 3000
+			});
+			return;
+		}
+		await register(email, password, nama, judul).then((res) => {
+
+			
 		}).catch((err) => {
 			Swal.fire({
 				title: 'Gagal',
-				text: 'Harap coba lagi',
+				text: 'Email sudah terdaftar',
 				icon: 'error',
 				confirmButtonText: 'OK',
 				timer: 3000
@@ -35,7 +52,7 @@
 
 <div class="w-full h-screen flex items-center bg-gray-100">
 	<section class="flex items-stretch justify-center w-full">
-		<div class="formContainer w-11/12 border-2 p-6 rounded-xl bg-white">
+		<div class="formContainer w-6/12  p-6 rounded-xl bg-white">
 			<div class="Logo m-50 flex justify-center">
 				<img src="https://i.ibb.co/cb8Z0fW/Logo-Up-1.png" alt="Logo-UP" class="m-5" />
 			</div>
@@ -53,7 +70,7 @@
 							name="email"
 							id="email"
 							placeholder="Email"
-							class="formInput w-full p-2 border-2 rounded-md my-1 color-grey"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray focus:border-primary"
 						/>
 					</div>
 					<div class="formGroup my-3">
@@ -63,8 +80,18 @@
 							name="username"
 							id="username"
 							placeholder="Username"
-							class="formInput w-full p-2 border-2 rounded-md my-1 color-grey"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
 						/>
+					</div>
+					<div class="formGroup my-3 ">
+						<label for="judul">Judul</label><br />
+						<input
+							type="text"
+							name="judul"
+							id="judul"
+							placeholder="Judul"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
+							/>
 					</div>
 					<div class="formGroup">
 						<label for="password">Password</label><br />
@@ -73,7 +100,7 @@
 							name="password"
 							id="password"
 							placeholder="Password"
-							class="formInput w-full p-2 border-2 rounded-md my-1"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
 						/>
 					</div>
 					<div class="formGroup text-center text-white">

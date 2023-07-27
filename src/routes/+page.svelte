@@ -33,6 +33,15 @@
 	getMahasiswa().then((res) => {
 		console.log(res);
 	});
+
+	import getAllSidang from "./service/landingPage";
+	
+	getAllSidang().then((res) => {
+		console.log(res);
+	});
+
+	
+	
 	
 </script>
 

@@ -28,7 +28,9 @@
     },
     "type": "module",
     "dependencies": {
+        "convert-csv-to-json": "^2.0.0",
         "firebase": "^10.1.0",
+        "papaparse": "^5.4.1",
         "sweetalert2": "^11.7.16"
     }
 }

@@ -1,10 +1,25 @@
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from "./firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
+import { error } from "@sveltejs/kit";
+import Swal from "sweetalert2";
 
-const register = async(email, password, nama) => {
+const register = async(email, password, nama, judul) => {
 
-    await createUserWithEmailAndPassword(auth, email, password)
+    const methods = await fetchSignInMethodsForEmail(auth, email);
+    if (methods.length > 0) {
+        // Email already exists, handle this case (e.g., display an error message)
+        console.log("Email already exists");
+        Swal.fire({
+            title: 'Error',
+            text: 'Email sudah terdaftar',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            timer: 3000
+
+        });
+    }
+    await createUserWithEmailAndPassword(auth, email, password, judul)
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
@@ -22,7 +37,46 @@ const register = async(email, password, nama) => {
                 })
                 .catch((error) => {
                     console.error("Error writing document: ", error);
+                    return error;
                 });
+
+            const sidangRef = doc(db, "sidang", user.uid);
+            setDoc(sidangRef, {
+                    id: user.uid,
+                    tanggal: "-",
+                    waktu: "-",
+                    ruangan: "-",
+                    dosenPenguji1: "-",
+                    dosenPenguji2: "-",
+                    dosenPembimbing: "-",
+                    dosenPembimbing2: "-",
+                    mahasiswa: nama,
+                    judul: judul,
+                    status: "belum terjadwal",
+                    link: "-",
+                    catatan: "-",
+                    nilai: "-",
+                    nilaiPenguji1: "-",
+                    nilaiPenguji2: "-",
+
+                })
+                .then(() => {
+                    console.log("Document successfully written!");
+                })
+                .catch((error) => {
+                    console.error("Error writing document: ", error);
+                });
+            Swal.fire({
+                title: 'Sukses',
+                text: 'Harap tunggu verifikasi admin',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                timer: 3000
+            });
+
+
+
+
             console.log(user)
                 // ...
         })
@@ -30,7 +84,8 @@ const register = async(email, password, nama) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(errorCode)
-                // ..
+
+
         });
 }
 

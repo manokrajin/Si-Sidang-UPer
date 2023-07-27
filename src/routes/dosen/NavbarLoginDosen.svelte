@@ -1,8 +1,12 @@
 <script>
-    import { loginState } from "../login/loginStore";
-     function logout() {
-        loginState.set(false);
-        window.location.href = "/login";
+    import { userStore } from "../login/loginStore";
+    import { goto } from "$app/navigation";
+	import {logoutUser} from "../service/login";
+
+    function logout() {
+        logoutUser().then(() => {
+            goto("/login")
+        })
     }
 </script>
 
@@ -14,17 +18,17 @@
     </div>
     <div class="right flex">
         <div class="beranda my-auto mx-3 hover:text-primary transition duration-200 ease-in-out">
-            <a href="">Beranda</a>
+            <a href="/dosen">Beranda</a>
         </div>
         <div class="biodata my-auto mx-3 hover:text-primary transition duration-200 ease-in-out">
-            <a href="">
+            <a href="/dosen/JadwalKosong">
                 Jadwal Kosong
             </a>
         
         </div>
         <div class="logout my-auto mx-3">
             <button on:click={logout} class="bg-primary/90 rounded  m-2 p-3 mx-1 hover:bg-red-alert transition duration-700 ease-in-out ">
-                <a href="" class="text-white">Logout</a>
+                <span class="text-white">Logout</span>
             </button>
         </div>
 

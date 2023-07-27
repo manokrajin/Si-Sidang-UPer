@@ -29,16 +29,16 @@
 
 <div class="jadwalKosong">
 	<div class="title flex justify-center font-bold text-primary text-lg m-5">
-		<h1>Jadwal Kosong</h1>
+		<h1>Tambah Jadwal Kosong</h1>
 	</div>
 
-	<form action="">
+	<form action="" class = "">
         <div class="nama-input m-5">
             <div class="form-group">
                 <label for="nama" class="text-primary">Nama Dosen</label>
             </div>
-            <select name="nama" id="nama" class="border rounded-lg border-primary p-1">
-                <option value="">Select an option</option>
+            <select name="nama" id="nama" class="border rounded-lg border-primary p-1 pr-10 text-left">
+                <option value="" class="text-left">Select an option</option>
             </select>
         </div>
 		
@@ -46,11 +46,11 @@
         <div class="date-and-hour flex">
             <div class="form-group flex flex-col m-5">
                 <label for="tanggal" class="text-primary">Tanggal</label>
-                <input type="date" id="tanggal" class="border rounded-lg border-primary" />
+                <input type="date" id="tanggal" class="border rounded-lg border-primary p-1" />
             </div>
             <div class="form-group flex flex-col m-5">
                 <label for="jam" class="text-primary">Jam</label>
-                <input type="time" id="jam" class="border rounded-lg border-primary" />
+                <input type="time" id="jam" class="border rounded-lg border-primary p-1" />
             </div>
         </div>
         

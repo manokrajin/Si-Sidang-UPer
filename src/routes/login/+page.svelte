@@ -1,20 +1,30 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { loginUser } from '../service/login';
+	import { userStore } from './loginStore';
+	import Swal from 'sweetalert2';
 
 	let email = '';
 	let password = '';
 
 	async function handleLogin() {
-		await loginUser(email, password).then(() => {
-			goto('/');
-		});
+		
+		try {
+			await loginUser(email, password);
+				goto('/');
+		} catch (error) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Email atau password salah!',
+			});
+		}
 	}
 </script>
 
 <div class="w-full h-screen flex items-center bg-gray-100">
 	<section class="flex items-stretch justify-center w-full">
-		<div class="formContainer w-11/12 border-2 p-6 rounded-xl bg-white">
+		<div class="formContainer w-6/12  p-6 rounded-xl bg-white">
 			<div class="Logo m-50 flex justify-center">
 				<img src="https://i.ibb.co/cb8Z0fW/Logo-Up-1.png" alt="Logo-UP" class="m-5" />
 			</div>
@@ -32,7 +42,7 @@
 						name="email"
 						id="email"
 						placeholder="email"
-						class="formInput w-full p-2 border-2 rounded-md my-1 color-grey"
+						class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
 					/>
 				</div>
 				<div class="formGroup">
@@ -43,7 +53,7 @@
 						name="password"
 						id="password"
 						placeholder="Password"
-						class="formInput w-full p-2 border-2 rounded-md my-1"
+						class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
 					/>
 				</div>
 				<div class="formGroup text-center text-white">

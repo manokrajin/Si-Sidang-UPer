@@ -1,5 +1,5 @@
 <script>
-	let nama = 'Mahran Radifan Zhafir';
+	import { userStore } from "../../../login/loginStore";
 	let nim = '0000000000';
 	let tanggalSidang = '00-00-0000';
 	let jamSidang = '00:00';
@@ -11,11 +11,11 @@
 		<tbody>
 			<tr>
 				<td>Nama</td>
-				<td>: {nama}</td>
+				<td>: {$userStore.user.nama}</td>
 			</tr>
 			<tr>
 				<td>NIM</td>
-				<td>: {nim}</td>
+				<td>: {$userStore.user.nim}</td>
 			</tr>
 			<tr>
 				<td>Judul</td>

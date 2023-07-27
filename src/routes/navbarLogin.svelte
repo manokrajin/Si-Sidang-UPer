@@ -4,6 +4,10 @@
     import { userStore } from "./login/loginStore";
 	import { logoutUser } from "./service/login";
 
+    function beranda() {
+     
+        goto("/mahasiswa/cekJadwal")
+    }
     function logout() {
         logoutUser().then(() => {
             goto("/login")
@@ -22,11 +26,11 @@
             <a class="hover:text-primary" href="/#/">Jadwal Sidang</a>
         </div>
         <div class="home mx-4 place-content-center my-auto hover:text-primary">
-            <a href="/mahasiswa/cekJadwal">Beranda</a>
+            <button on:click={beranda}>Beranda</button>
         </div>
 
         <div class="home mx-4 place-content-center my-auto">
-            <span class="capitalize">Halo {$userStore.user.nama} !</span>
+            <span class="capitalize">Halo, {$userStore.user.nama}!</span>
         </div>
     
         <button on:click={logout} class="bg-primary/90 rounded  m-2 px-3 mx-1 hover:bg-red-alert transition duration-700 ease-in-out ">

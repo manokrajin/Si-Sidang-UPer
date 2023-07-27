@@ -12,18 +12,14 @@ import { data } from '../mahasiswa/service/sidangStore';
 export const loginUser = async(email, password) => {
     try {
         userStore.set({...get(userStore), loading: true });
-        await signInWithEmailAndPassword(auth, email, password).then(async(userCredential) => {
-            const user = userCredential.user;
-            const userRef = doc(db, 'mahasiswa', user.uid);
-            await getDoc(userRef).then((snapshot) => {
-                const response = snapshot.data()
-                userStore.set({ isLogin: true, user: { uid: user.uid, ...response }, loading: false });
-
-            });
-        });
-
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        const userRef = doc(db, 'admin', user.uid);
+        const snapshot = await getDoc(userRef);
+        const response = snapshot.data();
+        userStore.set({ isLogin: true, user: { uid: user.uid, ...response }, loading: false });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         Swal.fire({
             title: 'Error',
             text: 'Email atau password salah',
@@ -32,6 +28,7 @@ export const loginUser = async(email, password) => {
             timer: 3000
         });
         userStore.set({...get(userStore), loading: false });
+        throw error; // Re-throw the error to reject access.
     }
 };
 

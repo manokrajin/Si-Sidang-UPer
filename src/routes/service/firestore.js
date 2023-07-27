@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, doc, setDoc, getDocs } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 const firebaseConfig = {
     apiKey: "AIzaSyCAcRZIWpaWH2q5RRK63cEQ6FtXkIA2H5k",
     authDomain: "si-sidang-uper-50c1e.firebaseapp.com",
@@ -14,8 +15,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 const mahasiswaRef = collection(db, "mahasiswa");
 
@@ -44,4 +45,4 @@ const getDosen = async() => {
     }
 }
 
-export { getMahasiswa, getDosen, db, auth };
+export { getMahasiswa, getDosen, db, auth, storage };

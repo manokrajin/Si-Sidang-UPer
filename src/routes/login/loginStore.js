@@ -6,4 +6,4 @@ export const userStore = storable({
     user: {},
     isLogin: false,
     loading: false
-});
+}, 'userStore');

@@ -14,7 +14,7 @@ export const loginUser = async(email, password) => {
         userStore.set({...get(userStore), loading: true });
         await signInWithEmailAndPassword(auth, email, password).then(async(userCredential) => {
             const user = userCredential.user;
-            const userRef = doc(db, 'mahasiswa', user.uid);
+            const userRef = doc(db, 'dosen', user.uid);
             await getDoc(userRef).then((snapshot) => {
                 const response = snapshot.data()
                 userStore.set({ isLogin: true, user: { uid: user.uid, ...response }, loading: false });

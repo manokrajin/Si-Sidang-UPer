@@ -1,5 +1,6 @@
 <script>
-
+	import { onDestroy } from "svelte";
+	import {uploadFile} from "../../../../service/storage";
     import Swal from "sweetalert2";
 	// @ts-ignore
 	function onSubmit(event) {
@@ -11,6 +12,8 @@
 		const tipe = document.getElementById('tipe').value;
 		// @ts-ignore
 		const file = document.getElementById('file').files[0];
+
+		uploadFile(file, judul, tipe);
 
         
 
@@ -25,7 +28,7 @@
         // @ts-ignore
         document.getElementById('judul').value = '';
         // @ts-ignore
-        document.getElementById('tipe').value = '';
+        document.getElementById('tipe').value = 'proposal';
         // @ts-ignore
         document.getElementById('file').value = '';
 
@@ -37,8 +40,16 @@
             timer: 1500
         })
 
-        
 
+
+		onDestroy(() => {
+			// @ts-ignore
+			document.getElementById('judul').value = '';
+			// @ts-ignore
+			document.getElementById('tipe').value = 'proposal';
+			// @ts-ignore
+			document.getElementById('file').value = '';
+		});
 	}
 </script>
 
@@ -68,7 +79,14 @@
 				<input type="file" id="file" class="border rounded-lg border-primary cursor-pointer" />
 			</div>
 			<div class="form-group">
-				<button class="p-2 bg-primary rounded-lg text-white hover:bg-primary/80">Upload</button>
+				<button 
+				class="p-2 bg-primary rounded-lg text-white hover:bg-primary/80"
+				on:click={() => {
+					uploadFile();
+				}
+				}
+				
+				>Upload</button>
 			</div>
 			<form />
 		</form>

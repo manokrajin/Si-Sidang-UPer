@@ -1,4 +1,5 @@
 <script type="module">
+    //ini punya slider mahasiswa
 	import Jadwal from '../jadwal.svelte';
 	import UploadTable from '../uploadTable.svelte';
 
@@ -15,3 +16,4 @@
 
     export { navOption };
 </script>
+
