@@ -1,12 +1,16 @@
 <script>
+// @ts-nocheck
+
 	import Papa from 'papaparse';
 	import registerDosen from '../../service/registerDosen';
 	import { EmailAuthCredential } from 'firebase/auth';
 	import { logoutUser } from '../../service/loginAdmin';
 	import { goto } from '$app/navigation';
-	import getAllSidang from '../service/getAllSidang';
+	import getAllSidang from '../../service/getAllSidang';
+	import { adminLoginStore } from '../../login/adminLoginStore';
 	import { onMount } from 'svelte';
-	import { sidangStore } from '../../mahasiswa/service/sidangStore';
+	import { sidangStore } from '../service/sidangAdminStore';
+	import { updateSidangDetail } from '../service/updateSidangDetail';
 
 	// Your Firebase configuration
 
@@ -17,20 +21,16 @@
 	let sidangData = [];
 
 	let searchTerm = '';
-	let filteredSidangStore = $sidangStore;
+	let filteredSidangStore = [];
 
-	function handleSearch(event) {
-		searchTerm = event.target.value.toLowerCase();
-		if (searchTerm.trim() === '') {
-			// If the search term is empty, display all sidangStore data
-			filteredSidangStore = $sidangStore;
-		} else {
-			// Filter the sidangStore based on the search term
-			filteredSidangStore = $sidangStore.filter((sidangData) =>
-				JSON.stringify(sidangData).toLowerCase().includes(searchTerm)
-			);
-		}
+	$: {
+		filteredSidangStore = $sidangStore.filter((data) => {
+			const name = data.mahasiswa ? data.mahasiswa.toLowerCase() : '';
+			const judul = data.judul ? data.judul.toLowerCase() : '';
+			return name.includes(searchTerm.toLowerCase()) || judul.includes(searchTerm.toLowerCase());
+		});
 	}
+
 	function handleCsvData(event) {
 		csvData = event.target.value;
 	}
@@ -67,13 +67,22 @@
 		}
 	}
 
+	let isLoggedIn = false;
+	const unsubscribe = adminLoginStore.subscribe((user) => {
+		isLoggedIn = user.isLogin;
+	});
 	onMount(async () => {
 		// Fetch all sidang data when the component is mounted
 		try {
-			await getAllSidang().then((res) => {
-				sidangStore.set(res);
-				console.log($sidangStore, 'ini aku');
-			});
+			if (isLoggedIn && $adminLoginStore.user.role == 'admin') {
+				await getAllSidang().then((res) => {
+					sidangStore.set(res);
+					console.log($sidangStore, 'ini aku');
+				});
+			} else {
+				// If the user is not logged in, redirect them to the login page
+				goto('/admin'); // Replace '/login' with the path to your login page
+			}
 		} catch (error) {
 			console.error('Error fetching sidang data:', error);
 		}
@@ -83,6 +92,29 @@
 		logoutUser().then(() => {
 			goto('/admin');
 		});
+	}
+
+	async function updateJadwal(id) {
+		const tanggal = document.getElementById('tanggal-' + id).value;
+		const jam = document.getElementById('jam-' + id).value;
+		try {
+			await updateSidangDetail(id, tanggal, jam);
+			// Update the sidangStore with the new values
+			sidangStore.update((sidangList) => {
+				return sidangList.map((sidang) => {
+					if (sidang.id === id) {
+						return {
+							...sidang,
+							tanggal: tanggal,
+							waktu: jam
+						};
+					}
+					return sidang;
+				});
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	}
 </script>
 
@@ -107,44 +139,73 @@
 		>
 	</div>
 
-	<div class="listSidang m-10 rounded-xl bg-white">
+	<div class="listSidang m-10 rounded-xl bg-white px-3">
 		<div class="title text-center font-bold text-3xl m-10">
 			<h1>List Sidang</h1>
 		</div>
 		<input
 			type="text"
-			placeholder="Search..."
-			class="mb-4 p-2 rounded"
+			placeholder="Search Here..."
+			class="mb-4 p-2 rounded mx-auto w-full border"
 			bind:value={searchTerm}
-			on:input={handleSearch}
 		/>
-		{#if $sidangStore}
-			{#if filteredSidangStore.length > 0}
-				{#each $sidangStore as sidangData}
-					<div class="cards rounded-xl m-3">
-						<div class="title bg-primary text-white p-2 rounded-t-xl">
-							<div class="judul capiitalize text-2xl">{sidangData.judul}</div>
+
+		{#each filteredSidangStore as sidangData}
+			<div class="cards rounded-xl m-3">
+				<div class="title bg-primary text-white p-2 rounded-t-xl">
+					<div class="judul capitalize text-2xl">{sidangData.judul}</div>
+				</div>
+				<div class="content flex p-2">
+					<div class="left w-1/2">
+						Nama Mahasiswa : {sidangData.mahasiswa} <br />
+						Dosen Pembimbing : {sidangData.dosenPembimbing} <br />
+						Dosen Pembimbing 2 : {sidangData.dosenPembimbing2} <br />
+						Dosen Penguji : {sidangData.dosenPenguji1} <br />
+						Dosen Penguji 2 : {sidangData.dosenPenguji2} <br />
+						{#if sidangData.dosenPenguji3}
+							Dosen Penguji 3 : {sidangData.dosenPenguji3} <br />
+						{/if}
+						{#if sidangData.tanggal != '-'}
+							Tanggal : {sidangData.tanggal} <br />
+						{/if}
+						{#if sidangData.waktu != '-'}
+							Jam : {sidangData.waktu} <br />
+						{/if}
+					</div>
+
+					<div class="right w-1/2 flex">
+						<div class="left-inner m-4 border-r pr-3">
+							<button class="bg-primary/80 text-white p-3 rounded-xl"> automasi jadwal </button>
 						</div>
-						<div class="content flex p-2">
-							<div class="left w-1/2">
-								Nama Mahasiswa : {sidangData.mahasiswa} <br />
-								Dosen Pembimbing : {sidangData.dosenPembimbing} <br />
-								Dosen Pembimbing 2 : {sidangData.dosenPembimbing2} <br />
-								Dosen Penguji : {sidangData.dosenPenguji1} <br />
-								Dosen Penguji 2 : {sidangData.dosenPenguji2} <br />
-								Dosen Penguji 3 : {sidangData.dosenPenguji3} <br />
-							</div>
-							<div class="right w-1/2">
-								<button class="bg-primary/80 text-white p-3 rounded-xl"> automasi jadwal </button>
+						<div class="right-inner p-3 flex">
+							<div class="left">
+								<span> atau upload manual : </span>
+								<form
+									action=""
+									class="flex flex-col"
+									on:submit|preventDefault={() => updateJadwal(sidangData.id)}
+								>
+									<input
+										type="date"
+										name="tanggal"
+										id={'tanggal-' + sidangData.id}
+										class="border rounded-xl p-2 mb-2"
+									/>
+									<input
+										type="time"
+										name="jam"
+										id={'jam-' + sidangData.id}
+										class="border rounded-xl p-2"
+									/>
+									<button type="submit" class="bg-primary/80 text-white p-3 rounded-xl mt-2">
+										Submit
+									</button>
+								</form>
 							</div>
 						</div>
 					</div>
-				{/each}
-			{:else}
-				<p>no match</p>
-			{/if}
-		{:else}
-			no data yet
-		{/if}
+				</div>
+			</div>
+		{/each}
 	</div>
 </main>

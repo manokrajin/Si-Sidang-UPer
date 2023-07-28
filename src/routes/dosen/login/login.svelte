@@ -2,8 +2,8 @@
 
 <script>
 	import Swal from 'sweetalert2';
-	import { adminLoginStore } from '../../../login/adminLoginStore';
-	import { loginUser } from '../../../service/loginAdmin';
+	import { loginUser } from '../../service/loginDosen';
+	import { userStore } from '../../login/loginStore';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
@@ -15,8 +15,8 @@
 		console.log('Login form submitted!');
 		try {
 			await loginUser(email, password);
-			if ($adminLoginStore.user.role == 'admin') {
-				goto('/admin/addDosen');
+			if ($userStore.user.role == 'dosen') {
+				goto('/dosen/Dokumen-TA');
 			} else {
 				Swal.fire({
 					icon: 'error',
@@ -34,7 +34,7 @@
 	}
 
 	let isLoggedIn = false;
-	const unsubscribe = adminLoginStore.subscribe((user) => {
+	const unsubscribe = userStore.subscribe((user) => {
 		isLoggedIn = user.isLogin;
 	});
 
@@ -42,18 +42,14 @@
 		// Fetch all sidang data when the component is mounted
 		try {
 			if (isLoggedIn) {
-        if ($adminLoginStore.user.role == 'admin'){
-          goto('/admin/addDosen');
-        }
-				else {
-          goto('/admin'); 
-
-        }
-
-
+				if ($userStore.user.role == 'dosen') {
+					goto('/dosen/Dokumen-TA');
+				} else {
+					goto('/dosen');
+				}
 			} else {
 				// If the user is not logged in, redirect them to the login page
-				goto('/admin'); // Replace '/login' with the path to your login page
+				goto('/dosen'); // Replace '/login' with the path to your login page
 			}
 		} catch (error) {
 			console.error('Error fetching sidang data:', error);

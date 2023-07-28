@@ -1,4 +1,10 @@
 <script>
+	import getAllSidang from "../../service/landingPage";
+	import { userStore } from "../../login/loginStore";
+	import { onMount } from "svelte";
+	import { sidangStore } from "../service/sidangDosenStore";
+	import { goto } from "$app/navigation";
+	
 	let data = [
 		{
 			id: 1,
@@ -19,6 +25,27 @@
 			status: 'siap mengikuti sidang'
 		}
 	];
+
+	let isLoggedIn = false;
+	const unsubscribe = userStore.subscribe((user) => {
+		isLoggedIn = user.isLogin;
+	});
+	onMount(async () => {
+		// Fetch all sidang data when the component is mounted
+		try {
+			if (isLoggedIn && $userStore.user.role == 'dosen ') {
+				await getAllSidang().then((res) => {
+					sidangStore.set(res);
+					console.log($sidangStore, 'ini aku');
+				});
+			} else {
+				// If the user is not logged in, redirect them to the login page
+				goto('/dosen'); // Replace '/login' with the path to your login page
+			}
+		} catch (error) {
+			console.error('Error fetching sidang data:', error);
+		}
+	});
 
 	let searchQuery = '';
 

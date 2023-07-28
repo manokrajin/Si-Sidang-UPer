@@ -1,6 +1,6 @@
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../../service/firestore';
-import { userStore } from '../../login/loginStore';
+import { db } from './firestore';
+import { userStore } from '../login/loginStore';
 
 
 
