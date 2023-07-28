@@ -2,9 +2,6 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from './firestore';
 import { userStore } from '../login/loginStore';
 
-
-
-
 const sidangRef = collection(db, 'sidang');
 const getAllSidang = async() => {
     try {

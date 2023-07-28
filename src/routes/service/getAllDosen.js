@@ -2,9 +2,6 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from './firestore';
 import { userStore } from '../login/loginStore';
 
-
-
-
 const dosenRef = collection(db, 'dosen');
 const getAllDosen = async() => {
     try {

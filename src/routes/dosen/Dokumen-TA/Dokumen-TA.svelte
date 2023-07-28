@@ -61,7 +61,7 @@
 		</div>
 
 		{#each filteredData as item}
-			<a href={`/dataMahasiswa/${item.id}`} class="cardTugasAkhir  border-b-2 border-gray my-5 mx-10 p-5 text-xl">
+			<a href={`/dosen/dokumen-ta/${item.id}`} class="cardTugasAkhir  border-b-2 border-gray my-5 mx-10 p-5 text-xl">
 				<div class="content flex justify-evenly p-5 w-full">
 					<div class="nama w-4/12 px-10">
 						<div class="nama text-primary">Nama :</div>

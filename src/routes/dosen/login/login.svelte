@@ -43,7 +43,7 @@
 		try {
 			if (isLoggedIn) {
 				if ($userStore.user.role == 'dosen') {
-					goto('/dosen/Dokumen-TA');
+					goto('/dosen/dokumen-ta');
 				} else {
 					goto('/dosen');
 				}
