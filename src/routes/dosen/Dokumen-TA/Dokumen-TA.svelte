@@ -5,27 +5,9 @@
 	import { sidangStore } from "../service/sidangDosenStore";
 	import { goto } from "$app/navigation";
 	
-	let data = [
-		{
-			id: 1,
-			nama: 'mahran',
-			judul: 'judul1',
-			status: 'siap mengikuti sidang'
-		},
-		{
-			id: 2,
-			nama: 'mahran2',
-			judul: 'judul2',
-			status: 'belum mengikuti sidang'
-		},
-		{
-			id: 3,
-			nama: 'mahran3',
-			judul: 'judul3',
-			status: 'siap mengikuti sidang'
-		}
-	];
 
+
+	
 	let isLoggedIn = false;
 	const unsubscribe = userStore.subscribe((user) => {
 		isLoggedIn = user.isLogin;
@@ -33,7 +15,7 @@
 	onMount(async () => {
 		// Fetch all sidang data when the component is mounted
 		try {
-			if (isLoggedIn && $userStore.user.role == 'dosen ') {
+			if (isLoggedIn && $userStore.user.role == 'dosen') {
 				await getAllSidang().then((res) => {
 					sidangStore.set(res);
 					console.log($sidangStore, 'ini aku');
@@ -52,17 +34,14 @@
 	let filteredData = [];
 
 	$: {
-		if (searchQuery.trim() === '') {
-			filteredData = data;
-		} else {
-			filteredData = data.filter(
-				(item) =>
-					item.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					item.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					item.status.toLowerCase().includes(searchQuery.toLowerCase())
-			);
-		}
+		filteredData = $sidangStore.filter((data) => {
+			const name = data.mahasiswa ? data.mahasiswa.toLowerCase() : '';
+			const judul = data.judul ? data.judul.toLowerCase() : '';
+			return name.includes(searchQuery.toLowerCase()) || judul.includes(searchQuery.toLowerCase());
+		});
 	}
+
+	
 </script>
 
 <div class="feedback">
@@ -86,7 +65,7 @@
 				<div class="content flex justify-evenly p-5 w-full">
 					<div class="nama w-4/12 px-10">
 						<div class="nama text-primary">Nama :</div>
-						<div class="text-xxl">{item.nama}</div>
+						<div class="text-xxl">{item.mahasiswa}</div>
 					</div>
 					<div class="judul w-4/12"> 
 						<div class="text-primary">Judul :</div>

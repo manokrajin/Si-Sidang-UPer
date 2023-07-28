@@ -42,15 +42,11 @@
 		// Fetch all sidang data when the component is mounted
 		try {
 			if (isLoggedIn) {
-        if ($adminLoginStore.user.role == 'admin'){
-          goto('/admin/addDosen');
-        }
-				else {
-          goto('/admin'); 
-
-        }
-
-
+				if ($adminLoginStore.user.role == 'admin') {
+					goto('/admin/addDosen');
+				} else {
+					goto('/admin');
+				}
 			} else {
 				// If the user is not logged in, redirect them to the login page
 				goto('/admin'); // Replace '/login' with the path to your login page

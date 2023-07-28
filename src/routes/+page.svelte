@@ -21,11 +21,7 @@
 	let search = '';
 	let filteredData = [];
 
-	$: {
-		filteredData = data.filter((data) =>
-			data.toString().toLowerCase().includes(search.toString().toLowerCase())
-		);
-	}
+	
 	import DynamicNavbar from "./DynamicNavbar.svelte";
 	import {getMahasiswa} from "./service/firestore";
 
@@ -35,18 +31,32 @@
 	});
 
 	import getAllSidang from "./service/landingPage";
-	
-	getAllSidang().then((res) => {
-		console.log(res);
-	});
-
+	import { onMount } from "svelte";
+	import { sidangStore } from "./mahasiswa/service/sidangStore";
+	onMount(async () => {
+		try{
+			await getAllSidang().then((res) => {
+				sidangStore.set(res);
+				console.log($sidangStore, 'ini aku');
+			});
+		} catch (error) {
+			console.error('Error fetching sidang data:', error);
+		}
+	})
+	$: {
+		filteredData = $sidangStore.filter((data) => {
+			const name = data.mahasiswa ? data.mahasiswa.toLowerCase() : '';
+			const judul = data.judul ? data.judul.toLowerCase() : '';
+			return name.includes(search.toLowerCase()) || judul.includes(search.toLowerCase());
+		});
+	}
 	
 	
 	
 </script>
 
 <DynamicNavbar />
-<header class="flex justify-between p-10 py-5">
+<header class="flex justify-between p-10 py-5 bg-gray/10">
 	<h1 class="py-3">Daftar Sidang {year}</h1>
 	<div>
 		<div class="pt-2 relative mx-auto text-gray-600 py-3">
@@ -81,9 +91,9 @@
 	</div>
 </header>
 
-<body class="">
+<body class="bg-gray/10">
 	<div class="jadwalTable flex items-stretch justify-center">
-		<table class="w-4/5">
+		<table class="w-4/5 border-spacing-y-5 border-separate rounded-xl">
 			<thead>
 				<tr>
 					<th>Judul</th>
@@ -93,18 +103,24 @@
 					<th>Jadwal Sidang</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td />
-				</tr>
+			<tbody class="">
 				{#each filteredData as data (data)}
-					<tr>
-						<td>{data.col1}</td>
-						<td>{data.col2}</td>
-						<td>{data.col3}</td>
-						<td>{data.col4}</td>
-						<td>{data.col5}</td>
-					</tr>
+					<tr class=" border mb-3 bg-white rounded-xl py-5">
+						<td class="py-10 rounded-l-xl pl-2"><p class= "whitespace-wrap max-w-xs break-all">{data.judul}saodn;jskpajnaskodka;jskldsakmdsdskjofnllsmd;m </p></td>
+						<td>{data.mahasiswa}</td>
+						<td>
+							Dosen Pembimbing 1 : <br>{data.dosenPembimbing} <br>
+							Dosen Pembimbing 2 : <br>{data.dosenPembimbing2}
+						</td>
+						<td>
+							Dosen Penguji 1 : <br>{data.dosenPenguji1} <br>
+							Dosen Penguji 2 : <br>{data.dosenPenguji2} <br>
+							{#if data.dosenPenguji3}
+								Dosen Penguji 3 : <br>{data.dosenPenguji3}
+							{/if}
+						</td>
+						<td class="rounded-r-xl pr-2">{data.col5}</td>
+					</tr>	
 				{/each}
 			</tbody>
 		</table>
