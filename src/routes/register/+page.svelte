@@ -3,16 +3,29 @@
 	import Swal from 'sweetalert2';
 	
 	import register from '../service/register';
-	
+	import getAllDosen from '../service/getAllDosen';
 
+	let dosen = []
+	onMount(async () => {
+		await getAllDosen().then((res) => {
+			dosen = res;
+		});
+		
+	});
 
 	async function showAlert() {
 		const email = document.getElementById('email').value;
 		const nama = document.getElementById('username').value;
 		const password = document.getElementById('password').value;
 		const judul = document.getElementById('judul').value;
+		const dosenPembimbing1 = document.getElementById('dosenPembimbing1').value;
+		const dosenPembimbing2 = document.getElementById('dosenPembimbing2').value;
+		const dosenPenguji1 = document.getElementById('dosenPenguji1').value;
+		const dosenPenguji2 = document.getElementById('dosenPenguji2').value;
+		const dosenPenguji3 = document.getElementById('dosenPenguji3').value;
 
-		if (!email || !nama || !password || !judul)  {
+
+		if (!email || !nama || !password || !judul || !dosenPembimbing1 || !dosenPembimbing2 || !dosenPenguji1 || !dosenPenguji2 || !dosenPenguji3)  {
 			Swal.fire({
 				title: 'Error',
 				text: 'Please fill in all fields',
@@ -34,7 +47,7 @@
 			});
 			return;
 		}
-		await register(email, password, nama, judul).then((res) => {
+		await register(email, password, nama, judul, dosenPembimbing1, dosenPembimbing2, dosenPenguji1,dosenPenguji2, dosenPenguji3).then((res) => {
 
 			
 		}).catch((err) => {
@@ -62,7 +75,7 @@
 				</h1>
 			</div>
 			<div class="formBody">
-				<div action="" method="post" class="">
+				<div action="post" method="post" class="" on:submit={() => showAlert()}>
 					<div class="formGroup my-3">
 						<label for="username">Email</label><br />
 						<input
@@ -93,6 +106,76 @@
 							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
 							/>
 					</div>
+					<div class="dosenInput flex justify-around">
+						<div class="left w-5/12">
+						  <label for="dosenPembimbing1">Dosen Pembimbing 1</label><br />
+						  <select
+							name="dosenPembimbing1"
+							id="dosenPembimbing1"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
+						  >
+							<option value="" disabled selected>Select Dosen Pembimbing 1</option>
+							{#each dosen as dosen}
+								<option value={dosen.nama}>{dosen.nama}</option>
+							{/each}
+							<!-- Add more options for Dosen Pembimbing 1 dropdown -->
+						  </select>
+					  
+						  <label for="dosenPembimbing2">Dosen Pembimbing 2</label><br />
+						  <select
+							name="dosenPembimbing2"
+							id="dosenPembimbing2"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
+						  >
+							<option value="" disabled selected>Select Dosen Pembimbing 2</option>
+							{#each dosen as dosen}
+							<option value={dosen.nama}>{dosen.nama}</option>
+						{/each}
+							<!-- Add more options for Dosen Pembimbing 2 dropdown -->
+						  </select>
+						</div>
+						<div class="right w-5/12">
+						  <label for="dosenPenguji1">Dosen Penguji 1</label><br />
+						  <select
+							name="dosenPenguji1"
+							id="dosenPenguji1"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
+						  >
+							<option value="" disabled selected>Select Dosen Penguji 1</option>
+							{#each dosen as dosen}
+							<option value={dosen.nama}>{dosen.nama}</option>
+						{/each}
+							<!-- Add more options for Dosen Penguji 1 dropdown -->
+						  </select>
+					  
+						  <label for="dosenPenguji2">Dosen Penguji 2</label><br />
+						  <select
+							name="dosenPenguji2"
+							id="dosenPenguji2"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
+						  >
+							<option value="" disabled selected>Select Dosen Penguji 2</option>
+							{#each dosen as dosen}
+							<option value={dosen.nama}>{dosen.nama}</option>
+						{/each}
+							<!-- Add more options for Dosen Penguji 2 dropdown -->
+						  </select>
+					  
+						  <label for="dosenPenguji3">Dosen Penguji 3</label><br />
+						  <select
+							name="dosenPenguji3"
+							id="dosenPenguji3"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
+						  >
+							<option value="" disabled selected>Select Dosen Penguji 3</option>
+							{#each dosen as dosen}
+								<option value={dosen.nama}>{dosen.nama}</option>
+							{/each}
+							<!-- Add more options for Dosen Penguji 3 dropdown -->
+						  </select>
+						</div>
+					  </div>
+					  
 					<div class="formGroup">
 						<label for="password">Password</label><br />
 						<input

@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "fire
 import { error } from "@sveltejs/kit";
 import Swal from "sweetalert2";
 
-const register = async(email, password, nama, judul) => {
+const register = async(email, password, nama, judul, dosenPembimbing1, dosenPembimbing2, dosenPenguji1, dosenPenguji2, dosenPenguji3) => {
 
     const methods = await fetchSignInMethodsForEmail(auth, email);
     if (methods.length > 0) {
@@ -19,7 +19,7 @@ const register = async(email, password, nama, judul) => {
 
         });
     }
-    await createUserWithEmailAndPassword(auth, email, password, judul)
+    await createUserWithEmailAndPassword(auth, email, password, judul, dosenPembimbing1, dosenPembimbing2, dosenPenguji1, dosenPenguji2, dosenPenguji3)
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
@@ -30,7 +30,7 @@ const register = async(email, password, nama, judul) => {
                     role: "mahasiswa",
                     tanggalLahir: "-",
                     nim: "-",
-                    prodi: "-",
+                    prodi: "Ilmu Komputer",
                 })
                 .then(() => {
                     console.log("Document successfully written!");
@@ -45,19 +45,17 @@ const register = async(email, password, nama, judul) => {
                     id: user.uid,
                     tanggal: "-",
                     waktu: "-",
-                    ruangan: "-",
-                    dosenPenguji1: "-",
-                    dosenPenguji2: "-",
-                    dosenPembimbing: "-",
-                    dosenPembimbing2: "-",
+                    dosenPenguji1: dosenPenguji1,
+                    dosenPenguji2: dosenPenguji2,
+                    dosenPenguji3: dosenPenguji3,
+                    dosenPembimbing1: dosenPembimbing1,
+                    dosenPembimbing2: dosenPembimbing2,
                     mahasiswa: nama,
                     judul: judul,
                     status: "belum terjadwal",
-                    link: "-",
-                    catatan: "-",
-                    nilai: "-",
-                    nilaiPenguji1: "-",
-                    nilaiPenguji2: "-",
+                    feedback1: "-",
+                    feedback2: "-",
+                    feedback3: "-",
 
                 })
                 .then(() => {
