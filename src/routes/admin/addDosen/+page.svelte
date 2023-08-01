@@ -11,6 +11,7 @@
 	import { onMount } from 'svelte';
 	import { sidangStore } from '../service/sidangAdminStore';
 	import { updateSidangDetail } from '../service/updateSidangDetail';
+	import { setJadwal } from '../service/scheduler';
 
 	// Your Firebase configuration
 
@@ -57,7 +58,8 @@
 
 	async function registerJson() {
 		for (const dosenData of jsonData) {
-			const { email, password, nama } = dosenData;
+			const { email, password, nama } = dosenData
+			console.log(email, password, nama)
 			try {
 				await registerDosen(email, password, nama);
 				jsonData = [];
@@ -77,7 +79,7 @@
 			if (isLoggedIn && $adminLoginStore.user.role == 'admin') {
 				await getAllSidang().then((res) => {
 					sidangStore.set(res);
-					console.log($sidangStore, 'ini aku');
+
 				});
 			} else {
 				// If the user is not logged in, redirect them to the login page
@@ -116,6 +118,11 @@
 			console.log(error);
 		}
 	}
+
+	setJadwal(sidangData).then((res) => {
+		console.log(sidangData, "ini aku");
+		console.log(res);
+	});
 </script>
 
 <main class="flex flex-col bg-gray/20">
@@ -152,14 +159,16 @@
 
 		{#each filteredSidangStore as sidangData}
 			<div class="cards rounded-xl m-3">
-				<div class="title bg-primary text-white p-2 rounded-t-xl">
+				<div class="title bg-primary text-white p-4 rounded-t-xl">
 					<div class="judul capitalize text-2xl">{sidangData.judul}</div>
 				</div>
 				<div class="content flex p-2">
 					<div class="left w-1/2">
 						Nama Mahasiswa : {sidangData.mahasiswa} <br />
-						Dosen Pembimbing : {sidangData.dosenPembimbing} <br />
-						Dosen Pembimbing 2 : {sidangData.dosenPembimbing2} <br />
+						Dosen Pembimbing : {sidangData.dosenPembimbing1} <br />
+						{#if sidangData.dosenPembimbing2}
+							Dosen Pembimbing 2 : {sidangData.dosenPembimbing2} <br />
+						{/if}
 						Dosen Penguji : {sidangData.dosenPenguji1} <br />
 						Dosen Penguji 2 : {sidangData.dosenPenguji2} <br />
 						{#if sidangData.dosenPenguji3}
@@ -175,7 +184,9 @@
 
 					<div class="right w-1/2 flex">
 						<div class="left-inner m-4 border-r pr-3">
-							<button class="bg-primary/80 text-white p-3 rounded-xl"> automasi jadwal </button>
+							<button class="bg-primary/80 text-white p-3 rounded-xl"
+							on:click={ () => setJadwal(sidangData)}
+							> automasi jadwal </button>
 						</div>
 						<div class="right-inner p-3 flex">
 							<div class="left">

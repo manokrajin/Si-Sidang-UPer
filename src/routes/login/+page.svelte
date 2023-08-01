@@ -7,6 +7,13 @@
 	let email = '';
 	let password = '';
 
+	$: {
+		if ($userStore.role == 'mahasiswa') {
+			goto('/');
+		} else if (userStore.role == 'dosen') {
+			goto('/dosen');
+		}
+	}
 	async function handleLogin() {
 		
 		try {

@@ -2,6 +2,7 @@
     import UploadTable from './uploadTable.svelte';
     import Jadwal from './jadwal.svelte';
     import DynamicNavbar from '../../../DynamicNavbar.svelte';
+    import Feedback from './feedback/feedback.svelte';
 
     let activePage = 'dataTugasAkhir';
 
@@ -11,7 +12,6 @@
 </script>
 
 <section>
-    <DynamicNavbar />
     <div class="title w-full flex justify-center my-10 font-bold text-primary/90 text-xl">
         Data Tugas Akhir
     </div>   
@@ -22,12 +22,17 @@
         <div class="navItem flex justify-center border-b-2 items-center p-3 px-10 cursor-pointer" class:active={activePage === 'jadwalSidang'} on:click={() => setActivePage('jadwalSidang')}>
             Jadwal Sidang
         </div>
+        <div class="navItem flex justify-center border-b-2 items-center p-3 px-10 cursor-pointer" class:active={activePage === 'feedback'} on:click={() => setActivePage('feedback')}>
+            Feedback
+        </div>
     </div>
-    <div class="content">
+    <div class="content w-full">
         {#if activePage === 'dataTugasAkhir'}
             <UploadTable />
         {:else if activePage === 'jadwalSidang'}
             <Jadwal />
+        {:else if activePage === 'feedback'}
+            <Feedback />
         {/if}
 
     </div>

@@ -5,7 +5,7 @@
 
     function logout() {
         logoutUser().then(() => {
-            goto("/login")
+            goto("/dosen")
         })
     }
 </script>
@@ -18,7 +18,7 @@
     </div>
     <div class="right flex">
         <div class="beranda my-auto mx-3 hover:text-primary transition duration-200 ease-in-out">
-            <a href="/dosen">Beranda</a>
+            <a href="/dosen/Dokumen-TA">Beranda</a>
         </div>
         <div class="biodata my-auto mx-3 hover:text-primary transition duration-200 ease-in-out">
             <a href="/dosen/JadwalKosong">

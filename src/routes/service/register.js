@@ -52,10 +52,7 @@ const register = async(email, password, nama, judul, dosenPembimbing1, dosenPemb
                     dosenPembimbing2: dosenPembimbing2,
                     mahasiswa: nama,
                     judul: judul,
-                    status: "belum terjadwal",
-                    feedback1: "-",
-                    feedback2: "-",
-                    feedback3: "-",
+                    feedback: [],
 
                 })
                 .then(() => {

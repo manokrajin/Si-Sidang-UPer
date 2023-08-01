@@ -4,6 +4,7 @@
 	import { onMount } from "svelte";
 	import { sidangStore } from "../service/sidangDosenStore";
 	import { goto } from "$app/navigation";
+	import NavbarLoginDosen from "../NavbarLoginDosen.svelte";
 	
 
 
@@ -60,9 +61,15 @@
 			/>
 		</div>
 
-		{#each filteredData as item}
-			<a href={`/dosen/dokumen-ta/${item.id}`} class="cardTugasAkhir  border-b-2 border-gray my-5 mx-10 p-5 text-xl">
+		{#each filteredData as item,i}
+			
+			<a href={`/dosen/Dokumen-TA/${item.id}`} class="cardTugasAkhir  border-b-2 border-gray my-5 mx-10 p-5 text-xl">
+				
 				<div class="content flex justify-evenly p-5 w-full">
+					<div class="number">
+						<div class="text-primary">No :</div>
+						<div class="text-xl">{i + 1}.</div>
+					</div>
 					<div class="nama w-4/12 px-10">
 						<div class="nama text-primary">Nama :</div>
 						<div class="text-xxl">{item.mahasiswa}</div>

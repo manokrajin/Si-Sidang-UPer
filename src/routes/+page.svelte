@@ -30,7 +30,7 @@
 		console.log(res);
 	});
 
-	import getAllSidang from "./service/landingPage";
+	import getAllSidang from "./service/getAllSidang";
 	import { onMount } from "svelte";
 	import { sidangStore } from "./mahasiswa/service/sidangStore";
 	onMount(async () => {
@@ -55,9 +55,8 @@
 	
 </script>
 
-<DynamicNavbar />
 <header class="flex justify-between p-10 py-5 bg-gray/10">
-	<h1 class="py-3">Daftar Sidang {year}</h1>
+	<h1 class="py-3 text-primary font-bold">Daftar Sidang {year}</h1>
 	<div>
 		<div class="pt-2 relative mx-auto text-gray-600 py-3">
 			<input
@@ -106,7 +105,7 @@
 			<tbody class="">
 				{#each filteredData as data (data)}
 					<tr class=" border mb-3 bg-white rounded-xl py-5">
-						<td class="py-10 rounded-l-xl pl-2"><p class= "whitespace-wrap max-w-xs break-all">{data.judul}saodn;jskpajnaskodka;jskldsakmdsdskjofnllsmd;m </p></td>
+						<td class="py-10 rounded-l-xl pl-2"><p class= " max-w-xs break-normal">{data.judul}</p></td>
 						<td>{data.mahasiswa}</td>
 						<td>
 							Dosen Pembimbing 1 : <br>{data.dosenPembimbing} <br>
@@ -119,7 +118,9 @@
 								Dosen Penguji 3 : <br>{data.dosenPenguji3}
 							{/if}
 						</td>
-						<td class="rounded-r-xl pr-2">{data.col5}</td>
+						<td class="rounded-r-xl pr-2">
+							{data.col5}
+						 </td>
 					</tr>	
 				{/each}
 			</tbody>

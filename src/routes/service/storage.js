@@ -36,6 +36,7 @@ const getFile = async() => {
             const unsubscribe = userStore.subscribe((value) => {
                 resolve(value.user.nama);
                 unsubscribe();
+                2
             });
         });
 
@@ -77,4 +78,31 @@ const getFile = async() => {
 };
 
 
-export { uploadFile, getFile };
+const getDosenFile = async(currentUserName) => {
+    try {
+        const storageRef = getStorage();
+        let child = ['proposal', 'laporan', 'syarat'];
+        let file = [];
+
+        for (child of child) {
+            const fileRef = ref(storage, `File Skripsi/${currentUserName}/${child}`);
+            const res = await listAll(fileRef);
+            const filePromises = res.items.map(async(itemRef) => {
+                try {
+                    const url = await getDownloadURL(itemRef);
+                    return { name: itemRef.name, url: url, type: child };
+                } catch (error) {
+                    console.log(error);
+                    return null;
+                }
+            });
+
+            const files = await Promise.all(filePromises);
+            file.push(...files.filter((file) => file !== null));
+        }
+
+        return file;
+    } catch (error) {}
+}
+
+export { uploadFile, getFile, getDosenFile };

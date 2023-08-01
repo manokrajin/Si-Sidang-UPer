@@ -25,7 +25,7 @@
 		const dosenPenguji3 = document.getElementById('dosenPenguji3').value;
 
 
-		if (!email || !nama || !password || !judul || !dosenPembimbing1 || !dosenPembimbing2 || !dosenPenguji1 || !dosenPenguji2 || !dosenPenguji3)  {
+		if (!email || !nama || !password || !judul || !dosenPembimbing1  || !dosenPenguji1 || !dosenPenguji2 )  {
 			Swal.fire({
 				title: 'Error',
 				text: 'Please fill in all fields',
@@ -75,7 +75,7 @@
 				</h1>
 			</div>
 			<div class="formBody">
-				<div action="post" method="post" class="" on:submit={() => showAlert()}>
+				<form  on:submit={showAlert}>
 					<div class="formGroup my-3">
 						<label for="username">Email</label><br />
 						<input
@@ -196,7 +196,7 @@
 							<a href="">Register</a>
 						</button>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 	</section>

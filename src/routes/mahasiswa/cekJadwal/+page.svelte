@@ -28,7 +28,6 @@
 </script>
 
 <div class="">
-	<DynamicNavbar />
 	<div class="title flex justify-center text-2xl my-10">Sidang Aktif</div>
 	<a href="/mahasiswa/cekJadwal/jadwalSidang">
 		<div class="card rounded-2xl mx-10 shadow-md hover:shadow-lg font-bold">
