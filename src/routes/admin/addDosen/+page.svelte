@@ -119,10 +119,30 @@
 		}
 	}
 
-	setJadwal(sidangData).then((res) => {
-		console.log(sidangData, "ini aku");
-		console.log(res);
-	});
+	async function updateAuto(id , sidangData){
+		console.log(sidangData, "hai");
+		const scheduler = await setJadwal(sidangData);
+		console.log(scheduler);
+		const tanggal = scheduler.date;
+		const jam = scheduler.overlappingStart;
+		await updateSidangDetail(id, tanggal, jam);
+		sidangStore.update((sidangList) => {
+				return sidangList.map((sidang) => {
+					if (sidang.id === id) {
+						return {
+							...sidang,
+							tanggal: tanggal,
+							waktu: jam
+						};
+					}
+					return sidang;
+				});
+			});
+	}
+	// setJadwal(sidangData).then((res) => {
+	// 	console.log(sidangData, "ini aku");
+		
+	// });
 </script>
 
 <main class="flex flex-col bg-gray/20">
@@ -157,6 +177,75 @@
 			bind:value={searchTerm}
 		/>
 
+		    {#each [null, undefined] as emptyValue}
+            {#each filteredSidangStore.filter(sidangData => sidangData.tanggal == emptyValue || sidangData.waktu == emptyValue) as sidangData}
+                <div class="cards rounded-xl m-3">
+					<div class="title bg-primary text-white p-4 rounded-t-xl">
+						<div class="judul capitalize text-2xl">{sidangData.judul}</div>
+					</div>
+					<div class="content flex p-2">
+						<div class="left w-1/2">
+							Nama Mahasiswa : {sidangData.mahasiswa} <br />
+							Dosen Pembimbing : {sidangData.dosenPembimbing1} <br />
+							{#if sidangData.dosenPembimbing2}
+								Dosen Pembimbing 2 : {sidangData.dosenPembimbing2} <br />
+							{/if}
+							Dosen Penguji : {sidangData.dosenPenguji1} <br />
+							Dosen Penguji 2 : {sidangData.dosenPenguji2} <br />
+							{#if sidangData.dosenPenguji3}
+								Dosen Penguji 3 : {sidangData.dosenPenguji3} <br />
+							{/if}
+							{#if sidangData.tanggal != '-' && sidangData.tanggal}
+								Tanggal : {sidangData.tanggal} <br />
+							{/if}
+							{#if sidangData.waktu != '-' && sidangData.waktu}
+								Jam : {sidangData.waktu} <br />
+							{/if}
+						</div>
+	
+						<div class="right w-1/2 flex">
+							<div class="left-inner m-4 border-r pr-3">
+								<button class="bg-primary/80 text-white p-3 rounded-xl"
+								on:click={ () => updateAuto(sidangData.id, sidangData)}
+								disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
+								> automasi jadwal </button>
+							</div>
+							<div class="right-inner p-3 flex">
+								<div class="left">
+									<span> atau upload manual : </span>
+									<form
+										action=""
+										class="flex flex-col"
+										on:submit|preventDefault={() => updateJadwal(sidangData.id)}
+										disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
+									>
+										<input
+											type="date"
+											name="tanggal"
+											id={'tanggal-' + sidangData.id}
+											class="border rounded-xl p-2 mb-2"
+										/>
+										<input
+											type="time"
+											name="jam"
+											id={'jam-' + sidangData.id}
+											class="border rounded-xl p-2"
+										/>
+										<button type="submit" class="bg-primary/80 text-white p-3 rounded-xl mt-2"
+										disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
+										>
+											Submit
+										</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+	
+                </div>
+            {/each}
+        {/each}
+
 		{#each filteredSidangStore as sidangData}
 			<div class="cards rounded-xl m-3">
 				<div class="title bg-primary text-white p-4 rounded-t-xl">
@@ -174,10 +263,10 @@
 						{#if sidangData.dosenPenguji3}
 							Dosen Penguji 3 : {sidangData.dosenPenguji3} <br />
 						{/if}
-						{#if sidangData.tanggal != '-'}
+						{#if sidangData.tanggal != '-' && sidangData.tanggal}
 							Tanggal : {sidangData.tanggal} <br />
 						{/if}
-						{#if sidangData.waktu != '-'}
+						{#if sidangData.waktu != '-' && sidangData.waktu}
 							Jam : {sidangData.waktu} <br />
 						{/if}
 					</div>
@@ -185,7 +274,8 @@
 					<div class="right w-1/2 flex">
 						<div class="left-inner m-4 border-r pr-3">
 							<button class="bg-primary/80 text-white p-3 rounded-xl"
-							on:click={ () => setJadwal(sidangData)}
+							on:click={ () => updateAuto(sidangData.id, sidangData)}
+							disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
 							> automasi jadwal </button>
 						</div>
 						<div class="right-inner p-3 flex">
@@ -195,6 +285,7 @@
 									action=""
 									class="flex flex-col"
 									on:submit|preventDefault={() => updateJadwal(sidangData.id)}
+									disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
 								>
 									<input
 										type="date"
@@ -208,7 +299,9 @@
 										id={'jam-' + sidangData.id}
 										class="border rounded-xl p-2"
 									/>
-									<button type="submit" class="bg-primary/80 text-white p-3 rounded-xl mt-2">
+									<button type="submit" class="bg-primary/80 text-white p-3 rounded-xl mt-2"
+									disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
+									>
 										Submit
 									</button>
 								</form>

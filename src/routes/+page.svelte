@@ -119,7 +119,7 @@
 							{/if}
 						</td>
 						<td class="rounded-r-xl pr-2">
-							{data.col5}
+							{data.tanggal}
 						 </td>
 					</tr>	
 				{/each}

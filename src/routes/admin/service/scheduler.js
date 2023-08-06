@@ -1,3 +1,4 @@
+// @ts-nocheck
 const scheduler = async(schedule, scheduled) => {
     // const scheduled = [{
     //     date: '2023-08-01',
@@ -9,7 +10,7 @@ const scheduler = async(schedule, scheduled) => {
         timeStart: entry.jamAwal,
         timeEnd: entry.jamAkhir,
         dateStart: entry.tanggal,
-        dateEnd: entry.tanggal,
+        dateEnd: entry.tanggal
     }));
     console.log(allSchedules, 'allSchedules');
 
@@ -86,22 +87,25 @@ const scheduler = async(schedule, scheduled) => {
         filteredTwoHourSchedules = twoHourSchedules.filter((schedule) => {
             const startTime = new Date(`2000-01-01 ${schedule.overlappingStart}`);
             const endTime = new Date(`2000-01-01 ${schedule.overlappingEnd}`);
-            const scheduledStartTime = new Date(`2000-01-01 ${scheduled[0].overlappingStart}`);
-            const scheduledEndTime = new Date(`2000-01-01 ${scheduled[0].overlappingEnd}`);
 
-            // If there is any overlap, we remove the schedule
-            if (
-                (startTime >= scheduledStartTime && startTime < scheduledEndTime) ||
-                (endTime > scheduledStartTime && endTime <= scheduledEndTime) ||
-                (startTime <= scheduledStartTime && endTime >= scheduledEndTime)
-            ) {
-                return false;
+            for (const scheduledEntry of scheduled) {
+                const scheduledStartTime = new Date(`2000-01-01 ${scheduledEntry.overlappingStart}`);
+                const scheduledEndTime = new Date(`2000-01-01 ${scheduledEntry.overlappingEnd}`);
+
+                // Check for overlap in date and time
+                if (
+                    schedule.date === scheduledEntry.date &&
+                    ((startTime >= scheduledStartTime && startTime < scheduledEndTime) ||
+                        (endTime > scheduledStartTime && endTime <= scheduledEndTime) ||
+                        (startTime <= scheduledStartTime && endTime >= scheduledEndTime))
+                ) {
+                    return false;
+                }
             }
 
             return true;
         });
     }
-
     return filteredTwoHourSchedules[0];
 };
 const getJamKosongList = async(nama) => {
@@ -125,6 +129,38 @@ const getJamKosongList = async(nama) => {
     }
 };
 
+const setScheduled = async(nama, scheduled) => {
+    try {
+        const dosenCollectionRef = collection(db, 'dosen');
+        const querySnapshot = await getDocs(query(dosenCollectionRef, where('nama', '==', nama)));
+
+        if (!querySnapshot.empty) {
+            const pembimbingDocs = querySnapshot.docs.map((doc) => doc.data());
+            console.log(pembimbingDocs, 'duar');
+            const id = querySnapshot.docs[0].id;
+            const scheduleToPush = {
+                date: scheduled.date,
+                overlappingStart: scheduled.overlappingStart,
+                overlappingEnd: scheduled.overlappingEnd
+            };
+            let scheduledList = scheduleToPush;
+
+            await updateDoc(doc(db, 'dosen', id), {
+                waktuTerisi: [scheduledList]
+            });
+            console.log(`Dokumen pembimbing ${nama} berhasil diupdate.`);
+            return true;
+        } else {
+            console.log(`Dokumen pembimbing ${nama} tidak ditemukan.`);
+            return false;
+        }
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
+
+
 const getScheduled = async(nama) => {
     try {
         const dosenCollectionRef = collection(db, 'dosen');
@@ -147,12 +183,14 @@ const getScheduled = async(nama) => {
 };
 
 import { db } from '../../service/firestore';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import Swal from 'sweetalert2';
 
 export const setJadwal = async(data) => {
     try {
         let schedule = [];
         let terisi = [];
+        let dosenTanpaJadwal = [];
         const dosenCollectionRef = collection(db, 'dosen');
         console.log(data, 'halo');
         if (data.dosenPembimbing1) {
@@ -164,6 +202,9 @@ export const setJadwal = async(data) => {
             console.log(scheduled1, 'scheduled1');
             if (scheduled1) {
                 terisi = [...terisi, ...scheduled1];
+            }
+            if (!jamKosongList1 || jamKosongList1.length === 0) {
+                dosenTanpaJadwal.push(data.dosenPembimbing1); // Add professor to the list
             }
         }
 
@@ -177,6 +218,10 @@ export const setJadwal = async(data) => {
             if (scheduled2) {
                 terisi = [...terisi, ...scheduled2];
             }
+            if (!jamKosongList2 || jamKosongList2.length === 0) {
+                dosenTanpaJadwal.push(data.dosenPembimbing2); // Add professor to the list
+            }
+
         }
 
         if (data.dosenPenguji1) {
@@ -188,6 +233,10 @@ export const setJadwal = async(data) => {
             if (scheduled3) {
                 terisi = [...terisi, ...scheduled3];
             }
+            if (!jamKosongList3 || jamKosongList3.length === 0) {
+                dosenTanpaJadwal.push(data.dosenPenguji1); // Add professor to the list
+            }
+
         }
 
         if (data.dosenPenguji2) {
@@ -199,6 +248,10 @@ export const setJadwal = async(data) => {
             if (scheduled4) {
                 terisi = [...terisi, ...scheduled4];
             }
+            if (!jamKosongList4 || jamKosongList4.length === 0) {
+                dosenTanpaJadwal.push(data.dosenPenguji2); // Add professor to the list
+            }
+
         }
 
         if (data.dosenPenguji3) {
@@ -210,10 +263,53 @@ export const setJadwal = async(data) => {
             if (scheduled5) {
                 terisi = [...terisi, ...scheduled5];
             }
+            if (!jamKosongList5 || jamKosongList5.length === 0) {
+                dosenTanpaJadwal.push(data.dosenPenguji3); // Add professor to the list
+            }
+
+        }
+        if (dosenTanpaJadwal.length > 0) {
+            const missingProfessors = dosenTanpaJadwal.join(', ');
+            console.log(missingProfessors, 'missingProfessors');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan',
+                text: `Dosen ${missingProfessors} belum mengisi jadwal!`,
+            });
+            return;
+        }
+        if (dosenTanpaJadwal.length === 0) {
+            const newSchedule = await scheduler(schedule, terisi);
+            if (newSchedule) {
+                console.log(newSchedule, 'newSchedule');
+                const scheduled = await setScheduled(data.dosenPembimbing1, newSchedule);
+                if (data.dosenPembimbing2) {
+                    const scheduled1 = await setScheduled(data.dosenPembimbing2, newSchedule);
+                }
+                if (data.dosenPenguji1) {
+                    const scheduled2 = await setScheduled(data.dosenPenguji1, newSchedule);
+                }
+                if (data.dosenPenguji2) {
+                    const scheduled3 = await setScheduled(data.dosenPenguji2, newSchedule);
+                }
+                if (data.dosenPenguji3) {
+                    const scheduled4 = await setScheduled(data.dosenPenguji3, newSchedule);
+                }
+                if (scheduled) {
+                    return newSchedule
+                }
+
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Tidak ada jadwal yang tersedia!',
+                });
+
+            }
         }
 
-        const newSchedule = await scheduler(schedule, terisi);
-        console.log(newSchedule, 'newSchedule');
     } catch (error) {
         console.log(error);
     }

@@ -1,5 +1,6 @@
 import { db } from "../../service/firestore";
 import { collection, query, where, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
+import Swal from "sweetalert2";
 
 export const updateJadwalDosen = async(nama, tanggal, jamAwal, jamAkhir) => {
     try {
@@ -20,8 +21,21 @@ export const updateJadwalDosen = async(nama, tanggal, jamAwal, jamAkhir) => {
             await updateDoc(docRef, {
                 waktuKosong: arrayUnion({ tanggal, jamAwal, jamAkhir }),
             });
+
+            Swal.fire({
+                icon: "success",
+                title: "Berhasil",
+                text: "Jadwal berhasil diupdate",
+            });
+
         } else {
             console.log(`No document found with nama: ${nama}`);
+            Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: "Lengkapi data dengan benar",
+            });
+
         }
     } catch (error) {
         console.log(error);

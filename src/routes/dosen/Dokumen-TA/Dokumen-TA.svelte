@@ -63,7 +63,7 @@
 
 		{#each filteredData as item,i}
 			
-			<a href={`/dosen/Dokumen-TA/${item.id}`} class="cardTugasAkhir  border-b-2 border-gray my-5 mx-10 p-5 text-xl">
+			<a href={`/dosen/Dokumen-TA/${item.id}`} class="cardTugasAkhir my-5 mx-10 p-5 text-xl rounded-xl bg-gray/30">
 				
 				<div class="content flex justify-evenly p-5 w-full">
 					<div class="number">
@@ -78,10 +78,6 @@
 						<div class="text-primary">Judul :</div>
 						<div class="text-xl">{item.judul}</div>
 					</div>
-					<div class="status px-5 whitespace-nowrap w-2/12">
-						<div class="text-primary">Status :</div>
-						<div class="text-xl">{item.status}</div>
-					</div>
 				</div>
 			</a>
 		{/each}
@@ -92,4 +88,18 @@
 	td {
 		padding: 1rem;
 	}
+
+    .cardTugasAkhir {
+        margin: 5px 10px;
+        padding: 5px;
+        text-align: center;
+        transition: transform 0.3s, background-color 0.3s; /* Add transitions for transform and background-color */
+    }
+
+    .cardTugasAkhir:hover {
+        background-color: #f0f0f0; /* Change the background color on hover */
+        transform: scale(1.05); /* Apply a scale transformation on hover to create a pop-up effect */
+    }
+    /* Other styles for your elements */
+
 </style>

@@ -1,5 +1,5 @@
 import { storage } from "./firestore";
-import { getStorage, ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes, listAll, getDownloadURL, deleteObject } from "firebase/storage";
 import { userStore } from "../login/loginStore";
 import { data } from "../mahasiswa/service/sidangStore";
 
@@ -105,4 +105,55 @@ const getDosenFile = async(currentUserName) => {
     } catch (error) {}
 }
 
-export { uploadFile, getFile, getDosenFile };
+const deleteFile = async(fileName, type) => {
+    try {
+        const currentUserName = await new Promise((resolve) => {
+            const unsubscribe = userStore.subscribe((value) => {
+                resolve(value.user.nama);
+                unsubscribe();
+            });
+        });
+
+        if (!currentUserName) {
+            // If the user is not logged in, return an empty array
+            return [];
+        }
+
+        const storageRef = getStorage();
+        const fileRef = ref(storageRef, `File Skripsi/${currentUserName}/${type}/${fileName}`);
+
+        await deleteObject(fileRef);
+        console.log(`File ${fileName} deleted successfully`);
+
+        // Update the file list in your store or component state
+        // For example, if you are using the `data` store from sidangStore:
+        const updatedData = data.update((items) => items.filter(item => item.name !== fileName));
+    } catch (error) {
+        console.error("Error deleting file:", error);
+    }
+};
+
+const downloadFile = async(fileName, type) => {
+    try {
+        const currentUserName = await new Promise((resolve) => {
+            const unsubscribe = userStore.subscribe((value) => {
+                resolve(value.user.nama);
+                unsubscribe();
+            });
+        });
+
+        if (!currentUserName) {
+            // If the user is not logged in, return an empty array
+            return [];
+        }
+
+        const storageRef = getStorage();
+        const fileRef = ref(storageRef, `File Skripsi/${currentUserName}/${type}/${fileName}`);
+
+        const url = await getDownloadURL(fileRef);
+        window.open(url, '_blank'); // Buka URL file di tab baru
+    } catch (error) {
+        console.error("Error downloading file:", error);
+    }
+};
+export { uploadFile, getFile, getDosenFile, deleteFile, downloadFile };

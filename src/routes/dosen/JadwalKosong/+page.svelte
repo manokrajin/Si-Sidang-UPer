@@ -2,6 +2,7 @@
     import { onDestroy, onMount } from "svelte";
     import { getDosen } from "../../service/firestore";
     import { updateJadwalDosen } from "../service/updateJadwalDosen";
+    import { userStore } from "../../login/loginStore";
 
     let namaDosen = [];
     let selectedDosen = "";
@@ -45,9 +46,9 @@
             </div>
             <select bind:value={selectedDosen} id="nama" class="border rounded-lg border-primary p-1 pr-10 text-left">
                 <option value="" class="text-left">Select an option</option>
-                {#each namaDosen as dosen}
-                    <option value={dosen.nama}>{dosen.nama}</option>
-                {/each}
+        
+                    <option value={$userStore.user.nama}>{$userStore.user.nama}</option>
+            
             </select>
         </div>
 

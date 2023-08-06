@@ -18,7 +18,7 @@
 		
 		try {
 			await loginUser(email, password);
-				goto('/');
+				goto('/mahasiswa/cekJadwal');
 		} catch (error) {
 			Swal.fire({
 				icon: 'error',
@@ -27,6 +27,11 @@
 			});
 		}
 	}
+
+	let isLoggedIn = false;
+	const unsubscribe = userStore.subscribe((user) => {
+		isLoggedIn = user.isLogin;
+	});
 </script>
 
 <div class="w-full h-screen flex items-center bg-gray-100">

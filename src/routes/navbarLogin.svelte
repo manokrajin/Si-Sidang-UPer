@@ -10,7 +10,7 @@
     }
     function logout() {
         logoutUser().then(() => {
-            goto("/login")
+            goto("/")
         })
     }
 </script>

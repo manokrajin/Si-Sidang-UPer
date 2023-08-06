@@ -1,7 +1,7 @@
 <script>
     import "../app.css";
    
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
 	import { userStore } from "./login/loginStore";
 
     let url = ``;
@@ -12,6 +12,24 @@
 	import NavbarLogin from "./navbarLogin.svelte";
 	import Navbar from "./navbar.svelte";
 
+
+	let userRole = ''; // Create a local variable to store the user role
+	let userActive = null;
+    // Subscribe to changes in the userStore
+    const unsubscribe = userStore.subscribe(user => {
+		console.log(user);
+		userActive = user;
+        userRole = user.user.role;
+		
+    });
+
+	
+
+
+	console.log(userRole);
+
+    // Unsubscribe when the component is destroyed
+    onDestroy(unsubscribe);
     
   
 
@@ -20,17 +38,14 @@
 <div class="app">
 
 	<header>
-		{#if $userStore.user.role == 'mahasiswa'}
-			<NavbarLogin />
-		{:else if $userStore.user.role == 'dosen'}
-			<NavbarLoginDosen />
-		{:else if !$userStore.user.role}
-		<Navbar />
-		{:else}
-				
-		{/if}
-	</header>
-
+        {#if userActive && userRole === 'mahasiswa'}
+            <NavbarLogin />
+        {:else if  userActive &&  userRole === 'dosen'}
+            <NavbarLoginDosen />
+        {:else}
+            <Navbar />
+        {/if}
+    </header>
 
 
 	<main>
@@ -41,3 +56,24 @@
 		<p>manokrajin 2023</p>
 	</footer>
 </div>
+
+<style>
+    .app {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensures the app takes at least the full viewport height */
+    }
+
+    main {
+        flex: 1; /* Allows main content to take remaining vertical space */
+    }
+
+    footer {
+        text-align: center;
+        padding: 10px 0;
+        background-color: #f0f0f0;
+        width: 100%;
+        position: relative; /* To position the footer at the bottom */
+        bottom: 0; /* To stick the footer at the bottom */
+    }
+</style>

@@ -4,7 +4,7 @@
 	import getSidang from '../service/mahasiswa';
 	import { writable } from 'svelte/store';
 	import { onDestroy, onMount } from 'svelte';
-
+	
     onMount(() => {
         fetchData();
     });
@@ -39,9 +39,25 @@
 					<div class="text-lg">{$judul}</div>
 				</div>
 				<div class="status px-5">
-					<div class="text-sm">Status : {$status}</div>
+					
 				</div>
 			</div>
 		</div>
 	</a>
 </div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efek transisi untuk perubahan transform dan box-shadow */
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:not(:hover) {
+        transform: scale(1); /* Kembalikan skala saat tidak dihover */
+        box-shadow: none; /* Hapus bayangan saat tidak dihover */
+    }
+</style>
