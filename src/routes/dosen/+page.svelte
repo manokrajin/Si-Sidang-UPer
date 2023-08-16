@@ -1,5 +1,4 @@
 <script>
-	import DokumenTa from './dokumen-ta/Dokumen-TA.svelte';
 	import Login from './login/login.svelte';
 	import NavbarLoginDosen from './NavbarLoginDosen.svelte';
 </script>
