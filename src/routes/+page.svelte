@@ -3,7 +3,6 @@
 	let now = new Date();
 	let year = now.getFullYear();
 	let month = now.getMonth() + 1; // JavaScript months start at 0
-
 	if (month < 8) {
 		// @ts-ignore
 		year = `${year - 1}/${year}`;
@@ -11,13 +10,6 @@
 		year = `${year}/${year + 1}`;
 	}
 
-	//nanti masukin data dari API untuk data jadwal
-	let data = [
-		{ col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-		{ col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' }
-		// Add as many rows as you want
-		// ..
-	];
 	let search = '';
 	let filteredData = [];
 
@@ -103,26 +95,31 @@
 				</tr>
 			</thead>
 			<tbody class="">
+				{#if filteredData.length ==0 }
+					 belum ada data
+				{:else}
 				{#each filteredData as data (data)}
-					<tr class=" border mb-3 bg-white rounded-xl py-5">
-						<td class="py-10 rounded-l-xl pl-2"><p class= " max-w-xs break-normal">{data.judul}</p></td>
-						<td>{data.mahasiswa}</td>
-						<td>
-							Dosen Pembimbing 1 : <br>{data.dosenPembimbing} <br>
-							Dosen Pembimbing 2 : <br>{data.dosenPembimbing2}
-						</td>
-						<td>
-							Dosen Penguji 1 : <br>{data.dosenPenguji1} <br>
-							Dosen Penguji 2 : <br>{data.dosenPenguji2} <br>
-							{#if data.dosenPenguji3}
-								Dosen Penguji 3 : <br>{data.dosenPenguji3}
-							{/if}
-						</td>
-						<td class="rounded-r-xl pr-2">
-							{data.tanggal}
-						 </td>
-					</tr>	
-				{/each}
+				<tr class=" border mb-3 bg-white rounded-xl py-5">
+					<td class="py-10 rounded-l-xl pl-2"><p class= " max-w-xs break-normal">{data.judul}</p></td>
+					<td>{data.mahasiswa}</td>
+					<td>
+						Dosen Pembimbing 1 : <br>{data.dosenPembimbing} <br>
+						Dosen Pembimbing 2 : <br>{data.dosenPembimbing2}
+					</td>
+					<td>
+						Dosen Penguji 1 : <br>{data.dosenPenguji1} <br>
+						Dosen Penguji 2 : <br>{data.dosenPenguji2} <br>
+						{#if data.dosenPenguji3}
+							Dosen Penguji 3 : <br>{data.dosenPenguji3}
+						{/if}
+					</td>
+					<td class="rounded-r-xl pr-2">
+						{data.tanggal}
+					 </td>
+				</tr>	
+			{/each}
+				{/if}
+				
 			</tbody>
 		</table>
 	</div>

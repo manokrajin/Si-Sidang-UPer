@@ -16,6 +16,7 @@
 	async function showAlert() {
 		const email = document.getElementById('email').value;
 		const nama = document.getElementById('username').value;
+		const nim = document.getElementById('nim').value;
 		const password = document.getElementById('password').value;
 		const judul = document.getElementById('judul').value;
 		const dosenPembimbing1 = document.getElementById('dosenPembimbing1').value;
@@ -25,7 +26,7 @@
 		const dosenPenguji3 = document.getElementById('dosenPenguji3').value;
 
 
-		if (!email || !nama || !password || !judul || !dosenPembimbing1  || !dosenPenguji1 || !dosenPenguji2 )  {
+		if (!email || !nama || !nim||  !password || !judul || !dosenPembimbing1  || !dosenPenguji1 || !dosenPenguji2 )  {
 			Swal.fire({
 				title: 'Error',
 				text: 'Please fill in all fields',
@@ -47,7 +48,7 @@
 			});
 			return;
 		}
-		await register(email, password, nama, judul, dosenPembimbing1, dosenPembimbing2, dosenPenguji1,dosenPenguji2, dosenPenguji3).then((res) => {
+		await register(email, password, nama, nim, judul, dosenPembimbing1, dosenPembimbing2, dosenPenguji1,dosenPenguji2, dosenPenguji3).then((res) => {
 
 			
 		}).catch((err) => {
@@ -93,6 +94,16 @@
 							name="username"
 							id="username"
 							placeholder="Username"
+							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
+						/>
+					</div>
+					<div class="formGroup my-3">
+						<label for="nim">NIM</label><br />
+						<input
+							type="text"
+							name="nim"
+							id="nim"
+							placeholder="NIM"
 							class="formInput w-full p-2 border-2 rounded-md my-1 border-gray"
 						/>
 					</div>

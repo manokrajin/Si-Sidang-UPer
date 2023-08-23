@@ -3,40 +3,63 @@
 	import { loginUser } from '../service/login';
 	import { userStore } from './loginStore';
 	import Swal from 'sweetalert2';
+	import { onMount } from 'svelte';
 
 	let email = '';
 	let password = '';
-
-	$: {
-		if ($userStore.role == 'mahasiswa') {
-			goto('/');
-		} else if (userStore.role == 'dosen') {
-			goto('/dosen');
-		}
-	}
-	async function handleLogin() {
-		
-		try {
-			await loginUser(email, password);
-				goto('/mahasiswa/cekJadwal');
-		} catch (error) {
-			Swal.fire({
-				icon: 'error',
-				title: 'Oops...',
-				text: 'Email atau password salah!',
-			});
-		}
-	}
 
 	let isLoggedIn = false;
 	const unsubscribe = userStore.subscribe((user) => {
 		isLoggedIn = user.isLogin;
 	});
+
+	onMount(async () => {
+		// Fetch all sidang data when the component is mounted
+		try {
+			if (isLoggedIn) {
+				if ($userStore.user.role == 'mahasiswa') {
+					goto('/mahasiswa/cekJadwal');
+				} else {
+					goto('/login');
+				}
+			} else {
+				// If the user is not logged in, redirect them to the login page
+				goto('/login'); // Replace '/login' with the path to your login page
+			}
+		} catch (error) {
+			console.error('Error fetching sidang data:', error);
+		}
+	});
+	
+	async function handleLogin() {
+		try {
+			await loginUser(email, password);
+			if($userStore.user.role == 'mahasiswa') {
+				goto('/mahasiswa/cekJadwal');
+            } else {
+				goto('/login');
+				Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Email atau password salah',
+                });
+				return;
+			}
+		} catch (error) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Email atau password salah!'
+			});
+		}
+	}
+
+	
 </script>
 
 <div class="w-full h-screen flex items-center bg-gray-100">
 	<section class="flex items-stretch justify-center w-full">
-		<div class="formContainer w-6/12  p-6 rounded-xl bg-white">
+		<div class="formContainer w-6/12 p-6 rounded-xl bg-white">
 			<div class="Logo m-50 flex justify-center">
 				<img src="https://i.ibb.co/cb8Z0fW/Logo-Up-1.png" alt="Logo-UP" class="m-5" />
 			</div>

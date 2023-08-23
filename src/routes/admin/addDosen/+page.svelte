@@ -20,17 +20,30 @@
 	let csvData = '';
 	let jsonData = [];
 	let sidangData = [];
-
+	let showScheduled = false;
 	let searchTerm = '';
 	let filteredSidangStore = [];
 
 	$: {
-		filteredSidangStore = $sidangStore.filter((data) => {
-			const name = data.mahasiswa ? data.mahasiswa.toLowerCase() : '';
-			const judul = data.judul ? data.judul.toLowerCase() : '';
-			return name.includes(searchTerm.toLowerCase()) || judul.includes(searchTerm.toLowerCase());
-		});
-	}
+    filteredSidangStore = $sidangStore.filter((data) => {
+        const name = data.mahasiswa ? data.mahasiswa.toLowerCase() : '';
+        const judul = data.judul ? data.judul.toLowerCase() : '';
+
+        // Add a condition to consider showScheduled
+        if (showScheduled) {
+            return (
+				(name.includes(searchTerm.toLowerCase()) || judul.includes(searchTerm.toLowerCase())) &&
+                (data.tanggal == '-' || data.waktu == '-' || data.tanggal == null || data.waktu == null)
+                
+            );
+        } else {
+            return (
+				(name.includes(searchTerm.toLowerCase()) || judul.includes(searchTerm.toLowerCase())) &&
+                (data.tanggal != '-' && data.waktu != '-' && data.tanggal != null && data.waktu != null)
+            );
+        }
+    });
+}
 
 	function handleCsvData(event) {
 		csvData = event.target.value;
@@ -48,7 +61,7 @@
 			Papa.parse(file, {
 				skipEmptyLines: true,
 				header: true,
-				delimiter: ',',
+				delimiter: ';',
 				complete: (result) => {
 					jsonData = result.data;
 				}
@@ -176,7 +189,10 @@
 			class="mb-4 p-2 rounded mx-auto w-full border"
 			bind:value={searchTerm}
 		/>
-
+		<label>
+			<input type="checkbox" bind:checked={showScheduled} />
+			Tampilkan yang belum terjadwal
+		</label>
 		    {#each [null, undefined] as emptyValue}
             {#each filteredSidangStore.filter(sidangData => sidangData.tanggal == emptyValue || sidangData.waktu == emptyValue) as sidangData}
                 <div class="cards rounded-xl m-3">

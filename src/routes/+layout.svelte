@@ -23,9 +23,6 @@
 		
     });
 
-	
-
-
 	console.log(userRole);
 
     // Unsubscribe when the component is destroyed
@@ -37,15 +34,19 @@
 
 <div class="app">
 
-	<header>
-        {#if userActive && userRole === 'mahasiswa'}
-            <NavbarLogin />
-        {:else if  userActive &&  userRole === 'dosen'}
-            <NavbarLoginDosen />
-        {:else}
-            <Navbar />
-        {/if}
-    </header>
+	{#await $userStore then }
+        <header>
+                {#if userActive && userRole === 'mahasiswa'}
+                    <NavbarLogin />
+                {:else if  userActive &&  userRole === 'dosen'}
+                    <NavbarLoginDosen />
+                {:else if  userActive &&  userRole === 'admin'}
+                
+                {:else}
+                    <Navbar />
+                {/if}
+            </header>
+    {/await}
 
 
 	<main>

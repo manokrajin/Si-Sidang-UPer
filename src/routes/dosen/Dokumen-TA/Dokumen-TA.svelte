@@ -5,10 +5,7 @@
 	import { sidangStore } from "../service/sidangDosenStore";
 	import { goto } from "$app/navigation";
 	import NavbarLoginDosen from "../NavbarLoginDosen.svelte";
-	
 
-
-	
 	let isLoggedIn = false;
 	const unsubscribe = userStore.subscribe((user) => {
 		isLoggedIn = user.isLogin;
@@ -98,7 +95,7 @@
 
     .cardTugasAkhir:hover {
         background-color: #f0f0f0; /* Change the background color on hover */
-        transform: scale(1.05); /* Apply a scale transformation on hover to create a pop-up effect */
+        transform: scale(1.01); /* Apply a scale transformation on hover to create a pop-up effect */
     }
     /* Other styles for your elements */
 

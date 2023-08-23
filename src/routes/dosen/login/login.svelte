@@ -7,6 +7,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
+	
 	let email = '';
 	let password = '';
 
@@ -43,7 +44,7 @@
 		try {
 			if (isLoggedIn) {
 				if ($userStore.user.role == 'dosen') {
-					goto('/dosen/dokumen-ta');
+					goto('/dosen/Dokumen-TA');
 				} else {
 					goto('/dosen');
 				}
@@ -55,6 +56,8 @@
 			console.error('Error fetching sidang data:', error);
 		}
 	});
+
+
 </script>
 
 <div class="flex items-center justify-center p-3">

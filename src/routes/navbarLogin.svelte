@@ -5,12 +5,11 @@
 	import { logoutUser } from "./service/login";
 
     function beranda() {
-     
         goto("/mahasiswa/cekJadwal")
     }
-    function logout() {
-        logoutUser().then(() => {
-            goto("/")
+    async function logout() {
+        await logoutUser().then(() => {
+            goto("/login")
         })
     }
 </script>
