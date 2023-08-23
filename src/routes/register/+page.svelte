@@ -64,7 +64,7 @@
 	}
 </script>
 
-<div class="w-full h-screen flex items-center bg-gray-100">
+<div class="w-full flex items-center bg-gray-100 py-5">
 	<section class="flex items-stretch justify-center w-full">
 		<div class="formContainer w-6/12  p-6 rounded-xl bg-white">
 			<div class="Logo m-50 flex justify-center">
