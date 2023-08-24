@@ -8,8 +8,6 @@ const registerAdmin = async(email, password) => {
 
     const methods = await fetchSignInMethodsForEmail(auth, email);
     if (methods.length > 0) {
-        // Email already exists, handle this case (e.g., display an error message)
-        console.log("Email already exists");
         Swal.fire({
             title: 'Error',
             text: 'Email sudah terdaftar',
@@ -29,24 +27,25 @@ const registerAdmin = async(email, password) => {
                     role: "admin",
                     prodi: "Ilmu Komputer",
                 })
-                .then(() => {
-                    console.log("Document successfully written!");
-                })
+                .then(() => {})
                 .catch((error) => {
                     console.error("Error writing document: ", error);
                     return error;
                 });
 
-
-            console.log(user)
-                // ...
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.log(errorCode)
+            Swal.fire({
+                title: 'Error',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 3000
 
-
+            });
+            return error;
         });
 }
 

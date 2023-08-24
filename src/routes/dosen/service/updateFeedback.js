@@ -19,6 +19,5 @@ export const updateFeedback = async(id, nama, feedback) => {
             title: "Gagal",
             text: "Feedback gagal ditambahkan",
         });
-        console.log(error);
     }
 }

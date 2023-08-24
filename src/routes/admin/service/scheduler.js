@@ -12,7 +12,6 @@ const scheduler = async(schedule, scheduled) => {
         dateStart: entry.tanggal,
         dateEnd: entry.tanggal
     }));
-    console.log(allSchedules, 'allSchedules');
 
     // Mengambil semua tanggal unik dari jadwal yang digabungkan
     const uniqueDates = [...new Set(allSchedules.map((schedule) => schedule.dateStart))];
@@ -115,16 +114,12 @@ const getJamKosongList = async(nama) => {
 
         if (!querySnapshot.empty) {
             const pembimbingDocs = querySnapshot.docs.map((doc) => doc.data());
-            console.log(pembimbingDocs, 'duar');
-
             const jamKosongList = pembimbingDocs[0].waktuKosong;
             return jamKosongList;
         } else {
-            console.log(`Dokumen pembimbing ${nama} tidak ditemukan.`);
             return null;
         }
     } catch (error) {
-        console.log(error);
         return null;
     }
 };
@@ -136,7 +131,6 @@ const setScheduled = async(nama, scheduled) => {
 
         if (!querySnapshot.empty) {
             const pembimbingDocs = querySnapshot.docs.map((doc) => doc.data());
-            console.log(pembimbingDocs, 'duar');
             const id = querySnapshot.docs[0].id;
             const scheduleToPush = {
                 date: scheduled.date,
@@ -148,18 +142,14 @@ const setScheduled = async(nama, scheduled) => {
             await updateDoc(doc(db, 'dosen', id), {
                 waktuTerisi: [scheduledList]
             });
-            console.log(`Dokumen pembimbing ${nama} berhasil diupdate.`);
             return true;
         } else {
-            console.log(`Dokumen pembimbing ${nama} tidak ditemukan.`);
             return false;
         }
     } catch (error) {
-        console.log(error);
         return false;
     }
 };
-
 
 const getScheduled = async(nama) => {
     try {
@@ -167,17 +157,14 @@ const getScheduled = async(nama) => {
         const querySnapshot = await getDocs(query(dosenCollectionRef, where('nama', '==', nama)));
         if (!querySnapshot.empty) {
             const pembimbingDocs = querySnapshot.docs.map((doc) => doc.data());
-            console.log(pembimbingDocs, 'duar');
             if (pembimbingDocs[0].waktuTerisi) {
                 const scheduled = pembimbingDocs[0].waktuTerisi;
                 return scheduled;
             } else {
-                console.log(`Dokumen pembimbing ${nama} tidak ditemukan. ini kah`);
                 return null;
             }
         }
     } catch (error) {
-        console.log(error);
         return null;
     }
 };
@@ -192,14 +179,12 @@ export const setJadwal = async(data) => {
         let terisi = [];
         let dosenTanpaJadwal = [];
         const dosenCollectionRef = collection(db, 'dosen');
-        console.log(data, 'halo');
         if (data.dosenPembimbing1) {
             const nama1 = data.dosenPembimbing1;
             const jamKosongList1 = await getJamKosongList(nama1);
 
             schedule = [...schedule, ...jamKosongList1];
             const scheduled1 = await getScheduled(nama1);
-            console.log(scheduled1, 'scheduled1');
             if (scheduled1) {
                 terisi = [...terisi, ...scheduled1];
             }
@@ -221,7 +206,6 @@ export const setJadwal = async(data) => {
             if (!jamKosongList2 || jamKosongList2.length === 0) {
                 dosenTanpaJadwal.push(data.dosenPembimbing2); // Add professor to the list
             }
-
         }
 
         if (data.dosenPenguji1) {
@@ -236,7 +220,6 @@ export const setJadwal = async(data) => {
             if (!jamKosongList3 || jamKosongList3.length === 0) {
                 dosenTanpaJadwal.push(data.dosenPenguji1); // Add professor to the list
             }
-
         }
 
         if (data.dosenPenguji2) {
@@ -251,7 +234,6 @@ export const setJadwal = async(data) => {
             if (!jamKosongList4 || jamKosongList4.length === 0) {
                 dosenTanpaJadwal.push(data.dosenPenguji2); // Add professor to the list
             }
-
         }
 
         if (data.dosenPenguji3) {
@@ -266,22 +248,19 @@ export const setJadwal = async(data) => {
             if (!jamKosongList5 || jamKosongList5.length === 0) {
                 dosenTanpaJadwal.push(data.dosenPenguji3); // Add professor to the list
             }
-
         }
         if (dosenTanpaJadwal.length > 0) {
             const missingProfessors = dosenTanpaJadwal.join(', ');
-            console.log(missingProfessors, 'missingProfessors');
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan',
-                text: `Dosen ${missingProfessors} belum mengisi jadwal!`,
+                text: `Dosen ${missingProfessors} belum mengisi jadwal!`
             });
             return;
         }
         if (dosenTanpaJadwal.length === 0) {
             const newSchedule = await scheduler(schedule, terisi);
             if (newSchedule) {
-                console.log(newSchedule, 'newSchedule');
                 const scheduled = await setScheduled(data.dosenPembimbing1, newSchedule);
                 if (data.dosenPembimbing2) {
                     const scheduled1 = await setScheduled(data.dosenPembimbing2, newSchedule);
@@ -296,20 +275,16 @@ export const setJadwal = async(data) => {
                     const scheduled4 = await setScheduled(data.dosenPenguji3, newSchedule);
                 }
                 if (scheduled) {
-                    return newSchedule
+                    return newSchedule;
                 }
-
-
             } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Tidak ada jadwal yang tersedia!',
+                    text: 'Tidak ada jadwal yang tersedia!'
                 });
-
             }
         }
-
     } catch (error) {
         console.log(error);
     }

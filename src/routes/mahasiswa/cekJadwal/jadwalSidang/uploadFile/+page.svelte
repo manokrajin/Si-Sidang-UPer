@@ -1,7 +1,7 @@
 <script>
-	import { onDestroy } from "svelte";
-	import {uploadFile} from "../../../../service/storage";
-    import Swal from "sweetalert2";
+	import { onDestroy } from 'svelte';
+	import { uploadFile } from '../../../../service/storage';
+	import Swal from 'sweetalert2';
 	// @ts-ignore
 	function onSubmit(event) {
 		event.preventDefault(); // Prevent the default form submission
@@ -15,32 +15,20 @@
 
 		uploadFile(file, judul, tipe);
 
-        
+		// @ts-ignore
+		document.getElementById('judul').value = '';
+		// @ts-ignore
+		document.getElementById('tipe').value = 'proposal';
+		// @ts-ignore
+		document.getElementById('file').value = '';
 
-		// Perform further operations with the form data
-		// For example, you can send it to an API or process it locally
-
-		console.log('Judul:', judul);
-		console.log('Tipe:', tipe);
-		console.log('File:', file);
-
-        // Clear the form data after successful submission
-        // @ts-ignore
-        document.getElementById('judul').value = '';
-        // @ts-ignore
-        document.getElementById('tipe').value = 'proposal';
-        // @ts-ignore
-        document.getElementById('file').value = '';
-
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: 'File berhasil diupload',
-            showConfirmButton: false,
-            timer: 1500
-        })
-
-
+		Swal.fire({
+			icon: 'success',
+			title: 'Berhasil',
+			text: 'File berhasil diupload',
+			showConfirmButton: false,
+			timer: 1500
+		});
 
 		onDestroy(() => {
 			// @ts-ignore
@@ -79,14 +67,12 @@
 				<input type="file" id="file" class="border rounded-lg border-primary cursor-pointer" />
 			</div>
 			<div class="form-group">
-				<button 
-				class="p-2 bg-primary rounded-lg text-white hover:bg-primary/80"
-				on:click={() => {
-					uploadFile();
-				}
-				}
-				
-				>Upload</button>
+				<button
+					class="p-2 bg-primary rounded-lg text-white hover:bg-primary/80"
+					on:click={() => {
+						uploadFile();
+					}}>Upload</button
+				>
 			</div>
 			<form />
 		</form>

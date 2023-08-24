@@ -7,8 +7,8 @@
     function beranda() {
         goto("/mahasiswa/cekJadwal")
     }
-    async function logout() {
-        await logoutUser().then(() => {
+    function logout() {
+        logoutUser().then(() => {
             goto("/login")
         })
     }

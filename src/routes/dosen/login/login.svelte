@@ -12,9 +12,7 @@
 	let password = '';
 
 	async function handleSubmit() {
-		// Handle login logic here (e.g., sending login request to the server)
-		console.log('Login form submitted!');
-		try {
+	
 			await loginUser(email, password);
 			if ($userStore.user.role == 'dosen') {
 				goto('/dosen/Dokumen-TA');

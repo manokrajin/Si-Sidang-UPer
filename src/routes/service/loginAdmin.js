@@ -19,7 +19,6 @@ export const loginUser = async(email, password) => {
         const response = snapshot.data();
         adminLoginStore.set({ isLogin: true, user: { uid: user.uid, ...response }, loading: false });
     } catch (error) {
-        console.log(error);
         Swal.fire({
             title: 'Error',
             text: 'Email atau password salah',

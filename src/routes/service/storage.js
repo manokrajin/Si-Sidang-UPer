@@ -24,7 +24,6 @@ const uploadFile = async(file, fileName, type) => {
         const storageRef = getStorage();
         const fileRef = ref(storageRef, `File Skripsi/${currentUserName}/${type}/${fileName || file.name}`);
         await uploadBytes(fileRef, file);
-        console.log('Uploaded a blob or file!');
     } catch (error) {
         console.log(error);
     }

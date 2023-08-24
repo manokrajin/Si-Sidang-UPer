@@ -2,13 +2,6 @@
     import { data } from "../../../service/sidangStore";
     import { getDokumenTADetail } from "../../../../service/tugasAkhir";
     import { userStore } from "../../../../login/loginStore";
-
-    console.log($userStore.user.uid)
-
-
-
-
-  
 </script>
 
 {#await getDokumenTADetail($userStore.user.uid)}

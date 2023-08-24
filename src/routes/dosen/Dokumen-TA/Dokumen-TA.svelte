@@ -16,7 +16,6 @@
 			if (isLoggedIn && $userStore.user.role == 'dosen') {
 				await getAllSidang().then((res) => {
 					sidangStore.set(res);
-					console.log($sidangStore, 'ini aku');
 				});
 			} else {
 				// If the user is not logged in, redirect them to the login page

@@ -8,8 +8,6 @@ const register = async(email, password, nama, nim, judul, dosenPembimbing1, dose
 
     const methods = await fetchSignInMethodsForEmail(auth, email);
     if (methods.length > 0) {
-        // Email already exists, handle this case (e.g., display an error message)
-        console.log("Email already exists");
         Swal.fire({
             title: 'Error',
             text: 'Email sudah terdaftar',
@@ -33,7 +31,7 @@ const register = async(email, password, nama, nim, judul, dosenPembimbing1, dose
                         prodi: "Ilmu Komputer",
                     })
                     .then(() => {
-                        console.log("Document successfully written!");
+
                     })
                     .catch((error) => {
                         console.error("Error writing document: ", error);
@@ -57,31 +55,27 @@ const register = async(email, password, nama, nim, judul, dosenPembimbing1, dose
 
                     })
                     .then(() => {
-                        console.log("Document successfully written!");
+
                     })
                     .catch((error) => {
                         console.error("Error writing document: ", error);
                     });
                 Swal.fire({
                     title: 'Sukses',
-                    text: 'Harap tunggu verifikasi admin',
+                    text: 'Silahkan masuk halaman login',
                     icon: 'success',
                     confirmButtonText: 'OK',
                     timer: 3000
                 });
-
-
-
-
-                console.log(user)
-                    // ...
             })
             .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorCode)
-
-
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Gagal mendaftar',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 3000
+                });
             });
     }
     // @ts-ignore

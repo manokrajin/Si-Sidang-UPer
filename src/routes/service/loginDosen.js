@@ -7,8 +7,6 @@ import { doc, getDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import { data } from '../mahasiswa/service/sidangStore';
 
-
-
 export const loginUser = async(email, password) => {
     try {
         userStore.set({...get(userStore), loading: true });
@@ -16,14 +14,11 @@ export const loginUser = async(email, password) => {
             const user = userCredential.user;
             const userRef = doc(db, 'dosen', user.uid);
             await getDoc(userRef).then((snapshot) => {
-                const response = snapshot.data()
+                const response = snapshot.data();
                 userStore.set({ isLogin: true, user: { uid: user.uid, ...response }, loading: false });
-
             });
         });
-
     } catch (error) {
-        console.log(error)
         Swal.fire({
             title: 'Error',
             text: 'Email atau password salah',

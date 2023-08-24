@@ -18,9 +18,7 @@
 	import {getMahasiswa} from "./service/firestore";
 
 
-	getMahasiswa().then((res) => {
-		console.log(res);
-	});
+	getMahasiswa()
 
 	import getAllSidang from "./service/getAllSidang";
 	import { onMount } from "svelte";
@@ -29,7 +27,6 @@
 		try{
 			await getAllSidang().then((res) => {
 				sidangStore.set(res);
-				console.log($sidangStore, 'ini aku');
 			});
 		} catch (error) {
 			console.error('Error fetching sidang data:', error);

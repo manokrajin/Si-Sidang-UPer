@@ -2,55 +2,55 @@
 
 <script>
 	import registerAdmin from '../../../service/registerAdmin';
-    import Swal from 'sweetalert2';
+	import Swal from 'sweetalert2';
 
-    let email = '';
-    let password = '';
+	let email = '';
+	let password = '';
 	async function handleSubmit() {
-		// Handle registration logic here (e.g., sending registration request to the server)
-		console.log('Registration form submitted!');
-		 email = document.getElementById('email').value;
-		 password = document.getElementById('password').value;
+		email = document.getElementById('email').value;
+		password = document.getElementById('password').value;
 
-        if(!email || !password) {
-            Swal.fire({
-                title: 'Error',
-                text: 'Please fill in all fields',
-                icon: 'error',
-                confirmButtonText: 'OK',
-                timer: 3000
-            });
-            return;
-        }
+		if (!email || !password) {
+			Swal.fire({
+				title: 'Error',
+				text: 'Please fill in all fields',
+				icon: 'error',
+				confirmButtonText: 'OK',
+				timer: 3000
+			});
+			return;
+		}
 
-        if(password.length < 6) {
-            Swal.fire({
-                title: 'Error',
-                text: 'Password must be at least 6 characters long',
-                icon: 'error',
-                confirmButtonText: 'OK',
-                timer: 3000
-            });
-            return;
-        }
+		if (password.length < 6) {
+			Swal.fire({
+				title: 'Error',
+				text: 'Password must be at least 6 characters long',
+				icon: 'error',
+				confirmButtonText: 'OK',
+				timer: 3000
+			});
+			return;
+		}
 
-        await registerAdmin(email, password).then((res) => {
-            Swal.fire({
-                title: 'Success',
-                text: 'Registration success',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                timer: 3000
-            });
-        }).catch((err) => {
-            Swal.fire({
-                title: 'Error',
-                text: 'Registration failed',
-                icon: 'error',
-                confirmButtonText: 'OK',
-                timer: 3000
-            });
-        });
+		await registerAdmin(email, password)
+			.then((res) => {
+				Swal.fire({
+					title: 'Success',
+					text: 'Registration success',
+					icon: 'success',
+					confirmButtonText: 'OK',
+					timer: 3000
+				});
+			})
+			.catch((err) => {
+				Swal.fire({
+					title: 'Error',
+					text: 'Registration failed',
+					icon: 'error',
+					confirmButtonText: 'OK',
+					timer: 3000
+				});
+			});
 	}
 </script>
 

@@ -45,7 +45,7 @@
 			namaDosen = [...res];
 			JadwalKosong($userStore.user.uid);
 		} catch (error) {
-			console.log(error);
+			console.error('Error fetching dosen data:', error);
 		}
 	});
 

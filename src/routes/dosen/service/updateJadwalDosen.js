@@ -29,7 +29,6 @@ export const updateJadwalDosen = async(nama, tanggal, jamAwal, jamAkhir) => {
             });
 
         } else {
-            console.log(`No document found with nama: ${nama}`);
             Swal.fire({
                 icon: "error",
                 title: "Gagal",
@@ -38,6 +37,10 @@ export const updateJadwalDosen = async(nama, tanggal, jamAwal, jamAkhir) => {
 
         }
     } catch (error) {
-        console.log(error);
+        Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: "Jadwal gagal diupdate",
+        });
     }
 };

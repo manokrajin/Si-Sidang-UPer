@@ -18,7 +18,6 @@ export const loginUser = async(email, password) => {
             });
         });
     } catch (error) {
-        console.log(error);
         Swal.fire({
             title: 'Error',
             text: 'Email atau password salah',

@@ -1,5 +1,5 @@
 <script>
-// @ts-nocheck
+	// @ts-nocheck
 
 	import Papa from 'papaparse';
 	import registerDosen from '../../service/registerDosen';
@@ -12,6 +12,7 @@
 	import { sidangStore } from '../service/sidangAdminStore';
 	import { updateSidangDetail } from '../service/updateSidangDetail';
 	import { setJadwal } from '../service/scheduler';
+	import Swal from 'sweetalert2';
 
 	// Your Firebase configuration
 
@@ -25,25 +26,27 @@
 	let filteredSidangStore = [];
 
 	$: {
-    filteredSidangStore = $sidangStore.filter((data) => {
-        const name = data.mahasiswa ? data.mahasiswa.toLowerCase() : '';
-        const judul = data.judul ? data.judul.toLowerCase() : '';
+		filteredSidangStore = $sidangStore.filter((data) => {
+			const name = data.mahasiswa ? data.mahasiswa.toLowerCase() : '';
+			const judul = data.judul ? data.judul.toLowerCase() : '';
 
-        // Add a condition to consider showScheduled
-        if (showScheduled) {
-            return (
-				(name.includes(searchTerm.toLowerCase()) || judul.includes(searchTerm.toLowerCase())) &&
-                (data.tanggal == '-' || data.waktu == '-' || data.tanggal == null || data.waktu == null)
-                
-            );
-        } else {
-            return (
-				(name.includes(searchTerm.toLowerCase()) || judul.includes(searchTerm.toLowerCase())) &&
-                (data.tanggal != '-' && data.waktu != '-' && data.tanggal != null && data.waktu != null)
-            );
-        }
-    });
-}
+			// Add a condition to consider showScheduled
+			if (showScheduled) {
+				return (
+					(name.includes(searchTerm.toLowerCase()) || judul.includes(searchTerm.toLowerCase())) &&
+					(data.tanggal == '-' || data.waktu == '-' || data.tanggal == null || data.waktu == null)
+				);
+			} else {
+				return (
+					(name.includes(searchTerm.toLowerCase()) || judul.includes(searchTerm.toLowerCase())) &&
+					data.tanggal != '-' &&
+					data.waktu != '-' &&
+					data.tanggal != null &&
+					data.waktu != null
+				);
+			}
+		});
+	}
 
 	function handleCsvData(event) {
 		csvData = event.target.value;
@@ -71,13 +74,18 @@
 
 	async function registerJson() {
 		for (const dosenData of jsonData) {
-			const { email, password, nama } = dosenData
-			console.log(email, password, nama)
+			const { email, password, nama } = dosenData;
 			try {
 				await registerDosen(email, password, nama);
 				jsonData = [];
 			} catch (error) {
-				console.log(error);
+				Swal.fire({
+					title: 'Gagal',
+					text: 'Email sudah terdaftar',
+					icon: 'error',
+					confirmButtonText: 'OK',
+					timer: 3000
+				});
 			}
 		}
 	}
@@ -92,7 +100,6 @@
 			if (isLoggedIn && $adminLoginStore.user.role == 'admin') {
 				await getAllSidang().then((res) => {
 					sidangStore.set(res);
-
 				});
 			} else {
 				// If the user is not logged in, redirect them to the login page
@@ -128,34 +135,34 @@
 				});
 			});
 		} catch (error) {
-			console.log(error);
+			Swal.fire({
+				title: 'Gagal',
+				text: 'Jadwal sudah terdaftar',
+				icon: 'error',
+				confirmButtonText: 'OK',
+				timer: 3000
+			});
 		}
 	}
 
-	async function updateAuto(id , sidangData){
-		console.log(sidangData, "hai");
+	async function updateAuto(id, sidangData) {
 		const scheduler = await setJadwal(sidangData);
-		console.log(scheduler);
 		const tanggal = scheduler.date;
 		const jam = scheduler.overlappingStart;
 		await updateSidangDetail(id, tanggal, jam);
 		sidangStore.update((sidangList) => {
-				return sidangList.map((sidang) => {
-					if (sidang.id === id) {
-						return {
-							...sidang,
-							tanggal: tanggal,
-							waktu: jam
-						};
-					}
-					return sidang;
-				});
+			return sidangList.map((sidang) => {
+				if (sidang.id === id) {
+					return {
+						...sidang,
+						tanggal: tanggal,
+						waktu: jam
+					};
+				}
+				return sidang;
 			});
+		});
 	}
-	// setJadwal(sidangData).then((res) => {
-	// 	console.log(sidangData, "ini aku");
-		
-	// });
 </script>
 
 <main class="flex flex-col bg-gray/20">
@@ -193,9 +200,9 @@
 			<input type="checkbox" bind:checked={showScheduled} />
 			Tampilkan yang belum terjadwal
 		</label>
-		    {#each [null, undefined] as emptyValue}
-            {#each filteredSidangStore.filter(sidangData => sidangData.tanggal == emptyValue || sidangData.waktu == emptyValue) as sidangData}
-                <div class="cards rounded-xl m-3">
+		{#each [null, undefined] as emptyValue}
+			{#each filteredSidangStore.filter((sidangData) => sidangData.tanggal == emptyValue || sidangData.waktu == emptyValue) as sidangData}
+				<div class="cards rounded-xl m-3">
 					<div class="title bg-primary text-white p-4 rounded-t-xl">
 						<div class="judul capitalize text-2xl">{sidangData.judul}</div>
 					</div>
@@ -218,13 +225,19 @@
 								Jam : {sidangData.waktu} <br />
 							{/if}
 						</div>
-	
+
 						<div class="right w-1/2 flex">
 							<div class="left-inner m-4 border-r pr-3">
-								<button class="bg-primary/80 text-white p-3 rounded-xl"
-								on:click={ () => updateAuto(sidangData.id, sidangData)}
-								disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
-								> automasi jadwal </button>
+								<button
+									class="bg-primary/80 text-white p-3 rounded-xl"
+									on:click={() => updateAuto(sidangData.id, sidangData)}
+									disabled={sidangData.tanggal != '-' &&
+										sidangData.waktu != '-' &&
+										sidangData.tanggal != null &&
+										sidangData.waktu != null}
+								>
+									automasi jadwal
+								</button>
 							</div>
 							<div class="right-inner p-3 flex">
 								<div class="left">
@@ -233,7 +246,10 @@
 										action=""
 										class="flex flex-col"
 										on:submit|preventDefault={() => updateJadwal(sidangData.id)}
-										disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
+										disabled={sidangData.tanggal != '-' &&
+											sidangData.waktu != '-' &&
+											sidangData.tanggal != null &&
+											sidangData.waktu != null}
 									>
 										<input
 											type="date"
@@ -247,8 +263,13 @@
 											id={'jam-' + sidangData.id}
 											class="border rounded-xl p-2"
 										/>
-										<button type="submit" class="bg-primary/80 text-white p-3 rounded-xl mt-2"
-										disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
+										<button
+											type="submit"
+											class="bg-primary/80 text-white p-3 rounded-xl mt-2"
+											disabled={sidangData.tanggal != '-' &&
+												sidangData.waktu != '-' &&
+												sidangData.tanggal != null &&
+												sidangData.waktu != null}
 										>
 											Submit
 										</button>
@@ -257,10 +278,9 @@
 							</div>
 						</div>
 					</div>
-	
-                </div>
-            {/each}
-        {/each}
+				</div>
+			{/each}
+		{/each}
 
 		{#each filteredSidangStore as sidangData}
 			<div class="cards rounded-xl m-3">
@@ -289,10 +309,16 @@
 
 					<div class="right w-1/2 flex">
 						<div class="left-inner m-4 border-r pr-3">
-							<button class="bg-primary/80 text-white p-3 rounded-xl"
-							on:click={ () => updateAuto(sidangData.id, sidangData)}
-							disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
-							> automasi jadwal </button>
+							<button
+								class="bg-primary/80 text-white p-3 rounded-xl"
+								on:click={() => updateAuto(sidangData.id, sidangData)}
+								disabled={sidangData.tanggal != '-' &&
+									sidangData.waktu != '-' &&
+									sidangData.tanggal != null &&
+									sidangData.waktu != null}
+							>
+								automasi jadwal
+							</button>
 						</div>
 						<div class="right-inner p-3 flex">
 							<div class="left">
@@ -301,7 +327,10 @@
 									action=""
 									class="flex flex-col"
 									on:submit|preventDefault={() => updateJadwal(sidangData.id)}
-									disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
+									disabled={sidangData.tanggal != '-' &&
+										sidangData.waktu != '-' &&
+										sidangData.tanggal != null &&
+										sidangData.waktu != null}
 								>
 									<input
 										type="date"
@@ -315,8 +344,13 @@
 										id={'jam-' + sidangData.id}
 										class="border rounded-xl p-2"
 									/>
-									<button type="submit" class="bg-primary/80 text-white p-3 rounded-xl mt-2"
-									disabled = {sidangData.tanggal != '-' && sidangData.waktu != '-' && sidangData.tanggal != null && sidangData.waktu != null}
+									<button
+										type="submit"
+										class="bg-primary/80 text-white p-3 rounded-xl mt-2"
+										disabled={sidangData.tanggal != '-' &&
+											sidangData.waktu != '-' &&
+											sidangData.tanggal != null &&
+											sidangData.waktu != null}
 									>
 										Submit
 									</button>

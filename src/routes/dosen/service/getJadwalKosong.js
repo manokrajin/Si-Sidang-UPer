@@ -25,7 +25,6 @@ const deleteJadwalKosong = async(dosenId, jadwalKosong) => {
         await updateDoc(jadwalDoc, {
             waktuKosong: jadwalKosong
         });
-        console.log("Document successfully updated!");
     } catch (error) {
         console.error("Error getting jasdwal data:", error);
         throw error;

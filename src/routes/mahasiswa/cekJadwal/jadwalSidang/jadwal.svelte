@@ -22,7 +22,6 @@
 		let dataSidang = {};
 		
 		dataSidang = res;
-		console.log(dataSidang);
 		judul = dataSidang[0].judul;
 		tanggalSidang = dataSidang[0].tanggal;
 		jamSidang = dataSidang[0].waktu;

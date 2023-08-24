@@ -17,11 +17,10 @@
              text: "Data berhasil diubah",
          });
      } catch (error) {
-         // Swal.fire({
-         //     icon: "error",
-         //     title: "Gagal",
-         //     text: "Data gagal diubah",
-         // });
-         console.log(error);
+         Swal.fire({
+             icon: "error",
+             title: "Gagal",
+             text: "Data gagal diubah",
+         });
      }
  }

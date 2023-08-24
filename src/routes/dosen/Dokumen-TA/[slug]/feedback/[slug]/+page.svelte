@@ -21,7 +21,12 @@
 		}
 
 		updateFeedback(data.slug, selectedDosen, feedbackDosen).then((res) => {
-			console.log(res);
+			Swal.fire({
+				icon: 'success',
+				title: 'Berhasil',
+				text: 'Feedback berhasil ditambahkan',
+				timer: 1000
+			});
 		});
 	}
 
@@ -43,14 +48,10 @@
 			if (res.dosenPenguji3 && res.dosenPenguji3 !== '-') {
 				dosen = [...dosen, { nama: res.dosenPenguji3 }];
 			}
-			console.log(dosen);
 		});
 	});
 
-	getDokumenTADetail(data.slug).then((res) => {
-		console.log(res);
-	});
-	console.log($userStore.user);
+	getDokumenTADetail(data.slug)
 </script>
 
 {#await getDokumenTADetail(data.slug)}
