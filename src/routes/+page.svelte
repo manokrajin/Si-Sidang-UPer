@@ -111,7 +111,8 @@
 						{/if}
 					</td>
 					<td class="rounded-r-xl pr-2">
-						{data.tanggal}
+						{data.tanggal} <br>
+						{data.waktu}
 					 </td>
 				</tr>	
 			{/each}
