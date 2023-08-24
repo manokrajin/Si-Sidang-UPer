@@ -100,7 +100,7 @@
 					<td class="py-10 rounded-l-xl pl-2"><p class= " max-w-xs break-normal">{data.judul}</p></td>
 					<td>{data.mahasiswa}</td>
 					<td>
-						Dosen Pembimbing 1 : <br>{data.dosenPembimbing} <br>
+						Dosen Pembimbing 1 : <br>{data.dosenPembimbing1} <br>
 						Dosen Pembimbing 2 : <br>{data.dosenPembimbing2}
 					</td>
 					<td>

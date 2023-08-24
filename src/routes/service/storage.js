@@ -25,7 +25,7 @@ const uploadFile = async(file, fileName, type) => {
         const fileRef = ref(storageRef, `File Skripsi/${currentUserName}/${type}/${fileName || file.name}`);
         await uploadBytes(fileRef, file);
     } catch (error) {
-        console.log(error);
+        console.error("Error uploading file:", error);
     }
 }
 
@@ -60,7 +60,6 @@ const getFile = async() => {
                     const url = await getDownloadURL(itemRef);
                     return { name: itemRef.name, url: url, type: child };
                 } catch (error) {
-                    console.log(error);
                     return null;
                 }
             });
@@ -91,7 +90,6 @@ const getDosenFile = async(currentUserName) => {
                     const url = await getDownloadURL(itemRef);
                     return { name: itemRef.name, url: url, type: child };
                 } catch (error) {
-                    console.log(error);
                     return null;
                 }
             });
@@ -122,7 +120,7 @@ const deleteFile = async(fileName, type) => {
         const fileRef = ref(storageRef, `File Skripsi/${currentUserName}/${type}/${fileName}`);
 
         await deleteObject(fileRef);
-        console.log(`File ${fileName} deleted successfully`);
+
 
         // Update the file list in your store or component state
         // For example, if you are using the `data` store from sidangStore:
