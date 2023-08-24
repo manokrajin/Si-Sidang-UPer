@@ -12,7 +12,7 @@
 	let password = '';
 
 	async function handleSubmit() {
-	
+		try {
 			await loginUser(email, password);
 			if ($userStore.user.role == 'dosen') {
 				goto('/dosen/Dokumen-TA');
@@ -42,7 +42,7 @@
 		try {
 			if (isLoggedIn) {
 				if ($userStore.user.role == 'dosen') {
-					goto('/dosen/Dokumen-TA');
+					goto('/dosen/dokumen-ta');
 				} else {
 					goto('/dosen');
 				}
