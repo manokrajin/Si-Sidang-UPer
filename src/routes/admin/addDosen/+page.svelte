@@ -64,7 +64,7 @@
 			Papa.parse(file, {
 				skipEmptyLines: true,
 				header: true,
-				delimiter: ';',
+				delimiter: ',',
 				complete: (result) => {
 					jsonData = result.data;
 				}
